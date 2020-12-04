@@ -15,7 +15,6 @@ enum ClientTypes {
 class AssetConnection {
   logger: Logger;
   ably: AblyTypes.RealtimePromise;
-  clientId: string;
   channel: AblyTypes.RealtimeChannelPromise;
   trackingId: string;
   onRawLocationUpdate?: LocationListener;
@@ -36,12 +35,6 @@ class AssetConnection {
     this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
     this.onStatusUpdate = onStatusUpdate;
 
-    if (!ablyOptions.clientId) {
-      logger.logError('ablyOptions.clientId must be provided');
-      throw new Error('ablyOptions.clientId must be provided');
-    }
-
-    this.clientId = ablyOptions.clientId;
     this.ably = new Ably.Realtime.Promise(ablyOptions);
     this.channel = this.ably.channels.get(trackingId, {
       params: { rewind: '1' },
@@ -78,7 +71,7 @@ class AssetConnection {
 
   private async joinChannelPresence() {
     this.channel.presence.subscribe(this.onPresenceMessage);
-    this.channel.presence.enterClient(this.clientId, ClientTypes.subscriber).catch((reason) => {
+    this.channel.presence.enterClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
       this.logger.logError(`Error entering channel presence: ${reason}`);
       throw new Error(reason);
     });
@@ -87,7 +80,7 @@ class AssetConnection {
   private leaveChannelPresence() {
     this.channel.presence.unsubscribe();
     this.notifyAssetIsOffline();
-    this.channel.presence.leaveClient(this.clientId, ClientTypes.subscriber).catch((reason) => {
+    this.channel.presence.leaveClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
       this.logger.logError(`Error leaving channel presence: ${reason}`);
       throw new Error(reason);
     });
