@@ -1,11 +1,7 @@
 import { Types as AblyTypes } from 'ably';
+import { LocationListener, StatusListener } from '../types';
 import AssetConnection from './AssetConnection';
 import Logger, { LoggerOptions } from './utils/Logger';
-
-type GeoJsonMessage = unknown;
-
-type LocationListener = (geoJsonMsg: GeoJsonMessage) => unknown;
-type StatusListener = (isOnline: boolean) => unknown;
 
 export type SubscriberOptions = {
   ablyOptions: AblyTypes.ClientOptions;

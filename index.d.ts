@@ -1,4 +1,4 @@
-import AblyAssetTracking from "./src";
+import AblyAssetTracking from './src';
 
 declare module 'ably-asset-tracking' {
   export default AblyAssetTracking;

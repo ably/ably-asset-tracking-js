@@ -1,10 +1,6 @@
 import Ably, { Types as AblyTypes } from 'ably';
-import { Feature as GeoJsonFeature, Point } from 'geojson';
+import { LocationListener, StatusListener } from '../types';
 import Logger from './utils/Logger';
-
-type GeoJsonMessage = GeoJsonFeature<Point>;
-type LocationListener = (geoJsonMsg: GeoJsonMessage) => unknown;
-type StatusListener = (isOnline: boolean) => unknown;
 
 enum EventNames {
   raw = 'raw',

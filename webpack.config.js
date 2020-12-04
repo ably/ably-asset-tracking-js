@@ -9,9 +9,7 @@ module.exports = {
     extensions: ['.ts'],
   },
   module: {
-    rules: [
-      { test: /\.ts$/, loader: 'ts-loader'},
-    ],
+    rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
   },
   externals: {
     ably: true,
