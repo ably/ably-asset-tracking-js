@@ -4,10 +4,12 @@ This is a demo of using an Ably data stream to place an animating marker on a ma
 
 ## To run locally
 
-First configure `TokenRequests` by creating an `.env` file in the root of the web folder and add your [Ably API key](https://support.ably.com/a/solutions/articles/3000030502) as below:
+First configure `TokenRequests` by creating an `.env` file in the root of the web folder and add your [Ably API key](https://support.ably.com/a/solutions/articles/3000030502) and Google API Key/Mapbox access token as below:
 
 ```bash
 ABLY_API_KEY=yourably:apikeyhere
+GOOGLE_API_KEY=yourgooglemapsapikeyhere
+MAPBOX_API_KEY=yourmapboxaccesstokenhere
 ```
 
 If you are running the app for the first time, then install the dependencies, in the web folder run:
@@ -52,7 +54,6 @@ For example, here is the Google `script.js`:
 
 ```js
 (async function() {
-
   const position = new Coordinate(0, 0); // Create start location
   const mapElement = document.getElementById("map"); // Find mapping element
   const map = new google.maps.Map(mapElement, { center: position, zoom: 3 }); // Initilise GMaps SDK
@@ -76,9 +77,6 @@ and the very similar MapBox `script.js`:
 ```js
 
 (async function() {
-
-  mapboxgl.accessToken = 'access-token-here';
-  
   const position = new Coordinate(0, 0);
   const mapElement = "map";
   const map = new mapboxgl.Map({ center: position.toGeoJson(), zoom: 15, container: mapElement, style: 'mapbox://styles/mapbox/streets-v11' });
