@@ -6,12 +6,17 @@
     
     <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
     <script src="main.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=***REMOVED***&libraries=&v=weekly"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
     <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
-    <script src="/Google/script.js" type="module"></script>
+    <script src="/MapBox/script.js" type="module"></script>
+    <script>
+      mapboxgl.accessToken = '<%= mapboxApiKey %>';
+    </script>
 
-    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="stylesheet" href="style.css" type="text/css" />    
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </script>
 </head>
 <body>
   <header>
@@ -19,17 +24,17 @@
     <div id="channel">
       <label for="channelID" class="label">Tracking ID:</label>
       <input type="text" name="channelID" id="channelID" placeholder="Channel ID" class="input">
-      <input id="updateChannelButton" type="button" value="Update" class="button"> 
+      <input type="button" value="Update" class="button" id="updateChannelButton" > 
     </div>
     <h2 class="subscribers" id="subscriberCount"></h2>
     <div class="controls">
       <h2>Animation:</h2>
-        <label class="switch">
-          <span class="switch-text">Off</span>
-          <input type="checkbox" id="animation" checked="true">
-          <span class="slider"></span>
-          <span class="switch-text">On</span>
-        </label>
+      <label class="switch">
+        <span class="switch-text">Off</span>
+        <input type="checkbox" id="animation" checked="true">
+        <span class="slider"></span>
+        <span class="switch-text">On</span>
+      </label>
     </div>
   </header>
     <div id="map"></div>
