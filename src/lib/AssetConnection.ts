@@ -55,29 +55,29 @@ class AssetConnection {
     this.channel.unsubscribe();
     await this.leaveChannelPresence();
     this.ably.close();
-  }
+  };
 
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
     this.channel.subscribe(EventNames.raw, (message) => {
-      const parsedMessage = (typeof message.data === 'string') ? JSON.parse(message.data) : message.data;
+      const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
         parsedMessage.forEach(rawLocationListener);
       } else {
         rawLocationListener(parsedMessage);
       }
     });
-  }
+  };
 
   private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {
     this.channel.subscribe(EventNames.enhanced, (message) => {
-      const parsedMessage = (typeof message.data === 'string') ? JSON.parse(message.data) : message.data;
+      const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
         parsedMessage.forEach(enhancedLocationListener);
       } else {
         enhancedLocationListener(parsedMessage);
       }
     });
-  }
+  };
 
   private joinChannelPresence = async () => {
     this.channel.presence.subscribe(this.onPresenceMessage);
@@ -85,7 +85,7 @@ class AssetConnection {
       this.logger.logError(`Error entering channel presence: ${reason}`);
       throw new Error(reason);
     });
-  }
+  };
 
   private leaveChannelPresence = async () => {
     this.channel.presence.unsubscribe();
@@ -96,7 +96,7 @@ class AssetConnection {
       this.logger.logError(`Error leaving channel presence: ${e.reason}`);
       throw new Error(e.reason);
     }
-  }
+  };
 
   private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
     if (presenceMessage.data?.type === ClientTypes.publisher) {
@@ -106,15 +106,15 @@ class AssetConnection {
         this.notifyAssetIsOffline();
       }
     }
-  }
+  };
 
   private notifyAssetIsOnline = () => {
     this?.onStatusUpdate?.(true);
-  }
+  };
 
   private notifyAssetIsOffline = () => {
     this?.onStatusUpdate?.(false);
-  }
+  };
 }
 
 export default AssetConnection;
