@@ -22,7 +22,7 @@ Ably Asset Tracking is:
 
 This repository also contains example apps that showcase how the Ably Asset Tracking SDK can be used:
 
-- the [Asset Subscribing example app](examples/subscring-example-app)
+- the [Asset Subscribing example app](examples/subscring-example-app/)
 
 ### Usage
 
