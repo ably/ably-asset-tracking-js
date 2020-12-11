@@ -17,7 +17,13 @@ If you are running the app for the first time, then install the dependencies, in
 npm install
 ```
 
-Then to run the web demos, in the web folder run:
+Also you will need to make sure you build the SDK before you can run the demo app, in the **root directory** of this repository run:
+```bash
+npm install
+npm run build
+```
+
+Then to run the web demos, in the example app folder run:
 
 ```bash
 npm run start
