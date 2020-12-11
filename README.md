@@ -18,9 +18,11 @@ Ably Asset Tracking is:
   - persistence for later retrieval
 - **built for purpose** - the APIs and underlying functionality are designed specifically to meet the requirements of a range of common asset tracking use-cases
 
-## Example Apps
+This repository contains the Asset Subscribing SDK for Web.
 
-This repository also contains example apps that showcase how the Ably Asset Tracking SDK can be used:
+## Example App
+
+This repository also contains an example app that showcases how the Ably Asset Tracking SDK can be used:
 
 - the [Asset Subscribing example app](examples/subscribing-example-app/)
 
