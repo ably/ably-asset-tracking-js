@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Map demo</title>
+    
+    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
+    <script src="main.js"></script>
+    <script src="<%= googleScriptPath %>" ></script>
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <script src="/Google/script.js" type="module"></script>
+
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <header>
+    <h1>Position Tracking</h1>
+    <div id="channel">
+      <label for="channelID" class="label">Tracking ID:</label>
+      <input type="text" name="channelID" id="channelID" placeholder="Channel ID" class="input">
+      <input id="updateChannelButton" type="button" value="Update" class="button"> 
+    </div>
+    <h2 class="subscribers" id="subscriberCount"></h2>
+    <div class="controls">
+      <h2>Animation:</h2>
+        <label class="switch">
+          <span class="switch-text">Off</span>
+          <input type="checkbox" id="animation" checked="true">
+          <span class="slider"></span>
+          <span class="switch-text">On</span>
+        </label>
+    </div>
+  </header>
+    <div id="map"></div>
+  </body>
+</html>

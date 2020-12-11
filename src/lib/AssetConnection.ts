@@ -51,58 +51,71 @@ class AssetConnection {
     }
   }
 
-  close(): void {
+  close = async (): Promise<void> => {
     this.channel.unsubscribe();
-    this.leaveChannelPresence();
+    await this.leaveChannelPresence();
     this.ably.close();
-  }
+  };
 
-  private subscribeForRawEvents(rawLocationListener: LocationListener) {
+  private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
     this.channel.subscribe(EventNames.raw, (message) => {
-      message.data.forEach(rawLocationListener);
+      const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
+      if (Array.isArray(parsedMessage)) {
+        parsedMessage.forEach(rawLocationListener);
+      } else {
+        rawLocationListener(parsedMessage);
+      }
     });
-  }
+  };
 
-  private subscribeForEnhancedEvents(enhancedLocationListener: LocationListener) {
-    this.channel.subscribe(EventNames.raw, (message) => {
-      message.data.forEach(enhancedLocationListener);
+  private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {
+    this.channel.subscribe(EventNames.enhanced, (message) => {
+      const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
+      if (Array.isArray(parsedMessage)) {
+        parsedMessage.forEach(enhancedLocationListener);
+      } else {
+        enhancedLocationListener(parsedMessage);
+      }
     });
-  }
+  };
 
-  private async joinChannelPresence() {
+  private joinChannelPresence = async () => {
     this.channel.presence.subscribe(this.onPresenceMessage);
     this.channel.presence.enterClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
       this.logger.logError(`Error entering channel presence: ${reason}`);
       throw new Error(reason);
     });
-  }
+  };
 
-  private leaveChannelPresence() {
+  private leaveChannelPresence = async () => {
     this.channel.presence.unsubscribe();
     this.notifyAssetIsOffline();
-    this.channel.presence.leaveClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
-      this.logger.logError(`Error leaving channel presence: ${reason}`);
-      throw new Error(reason);
-    });
-  }
+    try {
+      await this.channel.presence.leaveClient(this.ably.auth.clientId, ClientTypes.subscriber);
+    } catch (e) {
+      this.logger.logError(`Error leaving channel presence: ${e.reason}`);
+      throw new Error(e.reason);
+    }
+  };
 
-  private onPresenceMessage(presenceMessage: AblyTypes.PresenceMessage) {
-    if (presenceMessage.data.type === ClientTypes.publisher) {
+  private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
+    const data = typeof presenceMessage.data === 'string' ? JSON.parse(presenceMessage.data) : presenceMessage.data;
+    if (data?.type === ClientTypes.publisher) {
       if (presenceMessage.action === 'enter') {
         this.notifyAssetIsOnline();
       } else if (presenceMessage.action === 'leave') {
         this.notifyAssetIsOffline();
       }
     }
-  }
+  };
 
-  private notifyAssetIsOnline() {
+  private notifyAssetIsOnline = () => {
     this?.onStatusUpdate?.(true);
-  }
+  };
 
-  private notifyAssetIsOffline() {
+  private notifyAssetIsOffline = () => {
     this?.onStatusUpdate?.(false);
-  }
+  };
 }
 
 export default AssetConnection;

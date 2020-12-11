@@ -1,0 +1,277 @@
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#map {
+  height: calc(100vh - 86px);  
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+header, .controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header {
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+}
+
+h1 {
+  display: none;
+}
+
+.intro {
+  display: block;
+}
+
+h2 {
+  font-size: 1em;
+}
+
+#channel {
+  display: flex;
+}
+
+.controls {
+  padding: 0 10px 0 20px;
+  border-radius: 10px;
+  background-color: #eee;
+}
+
+.label {
+  display: none;
+}
+
+.input {
+  height: 52px;
+  max-width: 200px;
+  font-size: 1.2em;
+  padding: 0px 15px;
+  border-radius: 10px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border: 0;
+  background-color: #eee;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02)
+}
+
+.button {
+  height: 52px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  font-size: 1.2em;
+  color: white;
+  background-color: #F9A01B;
+}
+
+.button:hover {
+  background-color: #ED760A;
+}
+
+.historyContainer .item {
+    height: 300px;
+    border: 1px solid black;
+    overflow: hidden;
+    margin-top: 10px;
+    padding: 20px;
+  }  
+  
+.switch {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: max-content;
+  height: 54px;
+  border-radius: 10px;
+}
+
+.switch-text {
+  display: block;
+  margin: 0 10px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.switch input {
+  opacity: 0;
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: relative;
+  width: 60px;
+  height: 34px;
+  border-radius: 34px;
+  transition: .4s;
+  background-color: #F9A01B;
+  cursor: pointer;
+  transition: .4s;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02);
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  border-radius: 50%;
+  background-color: white;
+  transition: all .4s;
+}
+
+input:checked + .slider {
+  background-color: #ED760A;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #ED760A;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+p {
+  line-height: 1.6em;
+}
+
+.link {
+  display: block;
+  margin: 10px 0;
+  text-decoration: none;
+  font-weight: bold;
+  color: #F9A01B;
+}
+
+.link:hover {
+  color: #ED760A;
+}
+
+.marker-mapbox {
+  width: 30px;
+  height: 26px;
+  background: no-repeat center;
+  background-size: 100%;
+  background-image: url("./driverN.png");
+}
+
+.marker-mapbox[compass-direction="N"] {
+  background-image: url("./driverN.png");
+}
+
+.marker-mapbox[compass-direction="S"] {
+  background-image: url("./driverS.png");
+}
+
+.marker-mapbox[compass-direction="E"] {
+  background-image: url("./driverE.png");
+}
+
+.marker-mapbox[compass-direction="W"] {
+  background-image: url("./driverW.png");
+}
+
+.marker-mapbox[compass-direction="NE"] {
+  background-image: url("./driverNE.png");
+}
+
+.marker-mapbox[compass-direction="SE"] {
+  background-image: url("./driverSE.png");
+}
+
+.marker-mapbox[compass-direction="SW"] {
+  background-image: url("./driverSW.png");
+}
+
+.marker-mapbox[compass-direction="NW"] {
+  background-image: url("./driverNW.png");
+}
+
+/* mobile styles */
+@media (max-width: 800px) {
+  #map {
+    height: calc(100vh - 50px);
+  }
+  .subscribers {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    margin: 0;
+    padding: 10px;
+    background-color: white;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+  h2 {
+    margin: 0;
+  }
+  header {
+    flex-wrap: nowrap;
+    gap: 20px;
+
+  }
+  .input,
+  .button, 
+  .controls {
+    font-size: 1em;
+    height: 50px;
+    padding: 10px;
+  }
+  #channel {
+    max-width: 50%;
+  }
+  .switch-text {
+    display: none;
+  }
+  .controls {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    justify-content: flex-end;
+    align-items: flex-end;
+    padding: 0 0 0 10px;
+  }
+  .slider {
+    height: 34px; 
+  }
+  .slider:before {
+    height: 26px;
+    width: 26px;
+  }
+  h2 {
+    font-weight: normal;
+    font-size: 0.8em;
+  }
+}

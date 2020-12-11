@@ -38,10 +38,10 @@ class AssetSubscriber {
     );
   }
 
-  stop(): void {
-    this.assetConnection?.close?.();
+  stop = async (): Promise<void> => {
+    await this.assetConnection?.close?.();
     delete this.assetConnection;
-  }
+  };
 }
 
 export default AssetSubscriber;

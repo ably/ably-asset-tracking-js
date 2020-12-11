@@ -12,6 +12,6 @@ module.exports = {
     rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
   },
   externals: {
-    ably: true,
+    ably: 'Ably',
   },
 };
