@@ -55,6 +55,22 @@ class AssetConnection {
     this.ably.close();
   };
 
+  performChangeResolution = async (
+    resolution: Resolution,
+    onSuccess: () => unknown,
+    onError: (err: Error) => unknown
+  ): Promise<void> => {
+    try {
+      await this.channel.presence.update({
+        type: ClientTypes.subscriber,
+        resolution,
+      });
+      onSuccess();
+    } catch (e) {
+      onError(e);
+    }
+  };
+
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
     this.channel.subscribe(EventNames.raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;

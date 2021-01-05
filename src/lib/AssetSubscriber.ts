@@ -41,6 +41,10 @@ class AssetSubscriber {
     );
   }
 
+  sendChangeRequest(resolution: Resolution, onSuccess: () => unknown, onError: (err: Error) => unknown): void {
+    this.assetConnection?.performChangeResolution(resolution, onSuccess, onError);
+  }
+
   stop = async (): Promise<void> => {
     await this.assetConnection?.close?.();
     delete this.assetConnection;
