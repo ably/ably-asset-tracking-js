@@ -1,15 +1,10 @@
 import Ably, { Types as AblyTypes } from 'ably';
-import { LocationListener, StatusListener } from '../types';
+import { ClientTypes, LocationListener, Resolution, StatusListener } from '../types';
 import Logger from './utils/Logger';
 
 enum EventNames {
   raw = 'raw',
   enhanced = 'enhanced',
-}
-
-enum ClientTypes {
-  subscriber = 'subscriber',
-  publisher = 'publisher',
 }
 
 class AssetConnection {
@@ -20,6 +15,7 @@ class AssetConnection {
   onRawLocationUpdate?: LocationListener;
   onEnhancedLocationUpdate?: LocationListener;
   onStatusUpdate?: StatusListener;
+  resolution: Resolution | null;
 
   constructor(
     logger: Logger,
@@ -27,13 +23,15 @@ class AssetConnection {
     ablyOptions: AblyTypes.ClientOptions,
     onRawLocationUpdate?: LocationListener,
     onEnhancedLocationUpdate?: LocationListener,
-    onStatusUpdate?: StatusListener
+    onStatusUpdate?: StatusListener,
+    resolution?: Resolution
   ) {
     this.logger = logger;
     this.trackingId = trackingId;
     this.onRawLocationUpdate = onRawLocationUpdate;
     this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
     this.onStatusUpdate = onStatusUpdate;
+    this.resolution = resolution ?? null;
 
     this.ably = new Ably.Realtime.Promise(ablyOptions);
     this.channel = this.ably.channels.get(trackingId, {
@@ -81,17 +79,22 @@ class AssetConnection {
 
   private joinChannelPresence = async () => {
     this.channel.presence.subscribe(this.onPresenceMessage);
-    this.channel.presence.enterClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
-      this.logger.logError(`Error entering channel presence: ${reason}`);
-      throw new Error(reason);
-    });
+    this.channel.presence
+      .enterClient(this.ably.auth.clientId, {
+        type: ClientTypes.subscriber,
+        resolution: this.resolution,
+      })
+      .catch((reason) => {
+        this.logger.logError(`Error entering channel presence: ${reason}`);
+        throw new Error(reason);
+      });
   };
 
   private leaveChannelPresence = async () => {
     this.channel.presence.unsubscribe();
     this.notifyAssetIsOffline();
     try {
-      await this.channel.presence.leaveClient(this.ably.auth.clientId, ClientTypes.subscriber);
+      await this.channel.presence.leaveClient(this.ably.auth.clientId);
     } catch (e) {
       this.logger.logError(`Error leaving channel presence: ${e.reason}`);
       throw new Error(e.reason);
