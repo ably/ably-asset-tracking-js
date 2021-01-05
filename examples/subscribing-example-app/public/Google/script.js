@@ -3,8 +3,13 @@ import { RiderConnection } from "../RiderConnection.js";
 import { Coordinate } from "../Coordinate.js";
 import { bindUi } from "../Ui.js";
 
+const url = new URL(window.location);
+const keyParam = url.searchParams.get('key');
+const apiKey = keyParam || prompt('Please enter your Google Maps API key');
+url.searchParams.set('key', apiKey);
+window.history.pushState({}, '', url);
+
 var script = document.createElement('script');
-const apiKey = prompt('Please enter your Google Maps API key');
 script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=&v=weekly&callback=initMap`;
 script.defer = true;
 

@@ -3,7 +3,11 @@ import { RiderConnection } from "../RiderConnection.js";
 import { Coordinate } from "../Coordinate.js";
 import { bindUi } from "../Ui.js";
 
-const accessToken = prompt('Please enter your Mapbox access token');
+const url = new URL(window.location);
+const keyParam = url.searchParams.get('key');
+const accessToken = keyParam || prompt('Please enter your Mapbox access token');
+url.searchParams.set('key', accessToken);
+window.history.pushState({}, '', url);
 mapboxgl.accessToken = accessToken;
 
 (async function createMap() {
