@@ -4,9 +4,9 @@ import { Coordinate } from "../Coordinate.js";
 import { bindUi } from "../Ui.js";
 
 const url = new URL(window.location);
-const keyParam = url.searchParams.get('key');
+const keyParam = url.searchParams.get('mapboxAccessToken');
 const accessToken = keyParam || prompt('Please enter your Mapbox access token');
-url.searchParams.set('key', accessToken);
+url.searchParams.set('mapboxAccessToken', accessToken);
 window.history.pushState({}, '', url);
 mapboxgl.accessToken = accessToken;
 

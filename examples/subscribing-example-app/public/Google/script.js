@@ -4,9 +4,9 @@ import { Coordinate } from "../Coordinate.js";
 import { bindUi } from "../Ui.js";
 
 const url = new URL(window.location);
-const keyParam = url.searchParams.get('key');
+const keyParam = url.searchParams.get('googleApiKey');
 const apiKey = keyParam || prompt('Please enter your Google Maps API key');
-url.searchParams.set('key', apiKey);
+url.searchParams.set('googleApiKey', apiKey);
 window.history.pushState({}, '', url);
 
 var script = document.createElement('script');
