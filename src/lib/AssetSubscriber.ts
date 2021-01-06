@@ -44,7 +44,11 @@ class AssetSubscriber {
 
   sendChangeRequest(resolution: Resolution, onSuccess: () => unknown, onError: (err: Error) => unknown): void {
     this.resolution = resolution;
-    this.assetConnection?.performChangeResolution(resolution, onSuccess, onError);
+    if (!this.assetConnection) {
+      onError(new Error('Cannot change resolution; no asset is currently being tracked.'));
+    } else {
+      this.assetConnection.performChangeResolution(resolution, onSuccess, onError);
+    }
   }
 
   stop = async (): Promise<void> => {
