@@ -37,11 +37,13 @@ class AssetSubscriber {
       this.ablyOptions,
       this.onRawLocationUpdate,
       this.onEnhancedLocationUpdate,
-      this.onStatusUpdate
+      this.onStatusUpdate,
+      this.resolution
     );
   }
 
   sendChangeRequest(resolution: Resolution, onSuccess: () => unknown, onError: (err: Error) => unknown): void {
+    this.resolution = resolution;
     this.assetConnection?.performChangeResolution(resolution, onSuccess, onError);
   }
 
