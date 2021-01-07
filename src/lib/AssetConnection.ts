@@ -56,20 +56,11 @@ class AssetConnection {
     this.ably.close();
   };
 
-  performChangeResolution = async (
-    resolution: Resolution,
-    onSuccess: () => unknown,
-    onError: (err: Error) => unknown
-  ): Promise<void> => {
-    try {
-      await this.channel.presence.update({
-        type: ClientTypes.subscriber,
-        resolution,
-      });
-      nextTick(() => onSuccess());
-    } catch (e) {
-      nextTick(() => onError(e));
-    }
+  performChangeResolution = async (resolution: Resolution): Promise<void> => {
+    return this.channel.presence.update({
+      type: ClientTypes.publisher,
+      resolution,
+    });
   };
 
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {

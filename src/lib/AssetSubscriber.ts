@@ -2,7 +2,6 @@ import { Types as AblyTypes } from 'ably';
 import { LocationListener, Resolution, StatusListener } from '../types';
 import AssetConnection from './AssetConnection';
 import Logger, { LoggerOptions } from './utils/Logger';
-import { nextTick } from './utils/utils';
 
 export type SubscriberOptions = {
   ablyOptions: AblyTypes.ClientOptions;
@@ -43,14 +42,14 @@ class AssetSubscriber {
     );
   }
 
-  sendChangeRequest(resolution: Resolution, onSuccess: () => unknown, onError: (err: Error) => unknown): void {
+  sendChangeRequest = async (resolution: Resolution): Promise<void> => {
     this.resolution = resolution;
     if (!this.assetConnection) {
-      nextTick(() => onError(new Error('Cannot change resolution; no asset is currently being tracked.')));
+      throw new Error('Cannot change resolution; no asset is currently being tracked.');
     } else {
-      this.assetConnection.performChangeResolution(resolution, onSuccess, onError);
+      return this.assetConnection.performChangeResolution(resolution);
     }
-  }
+  };
 
   stop = async (): Promise<void> => {
     await this.assetConnection?.close?.();
