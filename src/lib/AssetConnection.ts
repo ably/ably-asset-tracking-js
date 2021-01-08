@@ -1,7 +1,7 @@
 import Ably, { Types as AblyTypes } from 'ably';
 import { ClientTypes, LocationListener, Resolution, StatusListener } from '../types';
 import Logger from './utils/Logger';
-import { nextTick } from './utils/utils';
+import { setImmediate } from './utils/utils';
 
 enum EventNames {
   Raw = 'raw',
@@ -67,7 +67,7 @@ class AssetConnection {
     this.channel.subscribe(EventNames.Raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach((msg) => nextTick(() => rawLocationListener(msg)));
+        parsedMessage.forEach((msg) => setImmediate(() => rawLocationListener(msg)));
       } else {
         rawLocationListener(parsedMessage);
       }
@@ -78,9 +78,9 @@ class AssetConnection {
     this.channel.subscribe(EventNames.Enhanced, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach((msg) => nextTick(() => enhancedLocationListener(msg)));
+        parsedMessage.forEach((msg) => setImmediate(() => enhancedLocationListener(msg)));
       } else {
-        nextTick(() => enhancedLocationListener(parsedMessage));
+        setImmediate(() => enhancedLocationListener(parsedMessage));
       }
     });
   };
