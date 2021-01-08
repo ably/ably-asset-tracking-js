@@ -1,15 +1,11 @@
 import Ably, { Types as AblyTypes } from 'ably';
-import { LocationListener, StatusListener } from '../types';
+import { ClientTypes, LocationListener, Resolution, StatusListener } from '../types';
 import Logger from './utils/Logger';
+import { setImmediate } from './utils/utils';
 
 enum EventNames {
-  raw = 'raw',
-  enhanced = 'enhanced',
-}
-
-enum ClientTypes {
-  subscriber = 'subscriber',
-  publisher = 'publisher',
+  Raw = 'raw',
+  Enhanced = 'enhanced',
 }
 
 class AssetConnection {
@@ -20,6 +16,7 @@ class AssetConnection {
   onRawLocationUpdate?: LocationListener;
   onEnhancedLocationUpdate?: LocationListener;
   onStatusUpdate?: StatusListener;
+  resolution: Resolution | null;
 
   constructor(
     logger: Logger,
@@ -27,13 +24,15 @@ class AssetConnection {
     ablyOptions: AblyTypes.ClientOptions,
     onRawLocationUpdate?: LocationListener,
     onEnhancedLocationUpdate?: LocationListener,
-    onStatusUpdate?: StatusListener
+    onStatusUpdate?: StatusListener,
+    resolution?: Resolution
   ) {
     this.logger = logger;
     this.trackingId = trackingId;
     this.onRawLocationUpdate = onRawLocationUpdate;
     this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
     this.onStatusUpdate = onStatusUpdate;
+    this.resolution = resolution ?? null;
 
     this.ably = new Ably.Realtime.Promise(ablyOptions);
     this.channel = this.ably.channels.get(trackingId, {
@@ -57,11 +56,18 @@ class AssetConnection {
     this.ably.close();
   };
 
+  performChangeResolution = async (resolution: Resolution): Promise<void> => {
+    return this.channel.presence.update({
+      type: ClientTypes.Publisher,
+      resolution,
+    });
+  };
+
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
-    this.channel.subscribe(EventNames.raw, (message) => {
+    this.channel.subscribe(EventNames.Raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach(rawLocationListener);
+        parsedMessage.forEach((msg) => setImmediate(() => rawLocationListener(msg)));
       } else {
         rawLocationListener(parsedMessage);
       }
@@ -69,29 +75,34 @@ class AssetConnection {
   };
 
   private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {
-    this.channel.subscribe(EventNames.enhanced, (message) => {
+    this.channel.subscribe(EventNames.Enhanced, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach(enhancedLocationListener);
+        parsedMessage.forEach((msg) => setImmediate(() => enhancedLocationListener(msg)));
       } else {
-        enhancedLocationListener(parsedMessage);
+        setImmediate(() => enhancedLocationListener(parsedMessage));
       }
     });
   };
 
   private joinChannelPresence = async () => {
     this.channel.presence.subscribe(this.onPresenceMessage);
-    this.channel.presence.enterClient(this.ably.auth.clientId, ClientTypes.subscriber).catch((reason) => {
-      this.logger.logError(`Error entering channel presence: ${reason}`);
-      throw new Error(reason);
-    });
+    this.channel.presence
+      .enterClient(this.ably.auth.clientId, {
+        type: ClientTypes.Subscriber,
+        resolution: this.resolution,
+      })
+      .catch((reason) => {
+        this.logger.logError(`Error entering channel presence: ${reason}`);
+        throw new Error(reason);
+      });
   };
 
   private leaveChannelPresence = async () => {
     this.channel.presence.unsubscribe();
     this.notifyAssetIsOffline();
     try {
-      await this.channel.presence.leaveClient(this.ably.auth.clientId, ClientTypes.subscriber);
+      await this.channel.presence.leaveClient(this.ably.auth.clientId);
     } catch (e) {
       this.logger.logError(`Error leaving channel presence: ${e.reason}`);
       throw new Error(e.reason);
@@ -100,7 +111,7 @@ class AssetConnection {
 
   private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
     const data = typeof presenceMessage.data === 'string' ? JSON.parse(presenceMessage.data) : presenceMessage.data;
-    if (data?.type === ClientTypes.publisher) {
+    if (data?.type === ClientTypes.Publisher) {
       if (presenceMessage.action === 'enter') {
         this.notifyAssetIsOnline();
       } else if (presenceMessage.action === 'leave') {
