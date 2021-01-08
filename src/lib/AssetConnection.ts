@@ -4,8 +4,8 @@ import Logger from './utils/Logger';
 import { nextTick } from './utils/utils';
 
 enum EventNames {
-  raw = 'raw',
-  enhanced = 'enhanced',
+  Raw = 'raw',
+  Enhanced = 'enhanced',
 }
 
 class AssetConnection {
@@ -58,13 +58,13 @@ class AssetConnection {
 
   performChangeResolution = async (resolution: Resolution): Promise<void> => {
     return this.channel.presence.update({
-      type: ClientTypes.publisher,
+      type: ClientTypes.Publisher,
       resolution,
     });
   };
 
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
-    this.channel.subscribe(EventNames.raw, (message) => {
+    this.channel.subscribe(EventNames.Raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
         parsedMessage.forEach((msg) => nextTick(() => rawLocationListener(msg)));
@@ -75,7 +75,7 @@ class AssetConnection {
   };
 
   private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {
-    this.channel.subscribe(EventNames.enhanced, (message) => {
+    this.channel.subscribe(EventNames.Enhanced, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
         parsedMessage.forEach((msg) => nextTick(() => enhancedLocationListener(msg)));
@@ -89,7 +89,7 @@ class AssetConnection {
     this.channel.presence.subscribe(this.onPresenceMessage);
     this.channel.presence
       .enterClient(this.ably.auth.clientId, {
-        type: ClientTypes.subscriber,
+        type: ClientTypes.Subscriber,
         resolution: this.resolution,
       })
       .catch((reason) => {
@@ -111,7 +111,7 @@ class AssetConnection {
 
   private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
     const data = typeof presenceMessage.data === 'string' ? JSON.parse(presenceMessage.data) : presenceMessage.data;
-    if (data?.type === ClientTypes.publisher) {
+    if (data?.type === ClientTypes.Publisher) {
       if (presenceMessage.action === 'enter') {
         this.notifyAssetIsOnline();
       } else if (presenceMessage.action === 'leave') {

@@ -1,9 +1,9 @@
 export enum LogLevel {
-  none = 0,
-  error = 1, // default
-  major = 2,
-  minor = 3,
-  micro = 4,
+  None = 0,
+  Error = 1, // default
+  Major = 2,
+  Minor = 3,
+  Micro = 4,
 }
 
 export type LoggerOptions = {
@@ -11,26 +11,26 @@ export type LoggerOptions = {
 };
 
 class Logger {
-  logLevel = LogLevel.error;
+  logLevel = LogLevel.Error;
 
   constructor(options?: LoggerOptions) {
     if (options?.level) this.logLevel = options.level;
   }
 
   logError(msg: string): void {
-    if (this.logLevel >= LogLevel.error) console.log(msg);
+    if (this.logLevel >= LogLevel.Error) console.log(msg);
   }
 
   logMajor(msg: string): void {
-    if (this.logLevel >= LogLevel.major) console.log(msg);
+    if (this.logLevel >= LogLevel.Major) console.log(msg);
   }
 
   logMinor(msg: string): void {
-    if (this.logLevel >= LogLevel.minor) console.log(msg);
+    if (this.logLevel >= LogLevel.Minor) console.log(msg);
   }
 
   logMicro(msg: string): void {
-    if (this.logLevel >= LogLevel.micro) console.log(msg);
+    if (this.logLevel >= LogLevel.Micro) console.log(msg);
   }
 }
 

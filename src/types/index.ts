@@ -5,11 +5,11 @@ export type LocationListener = (geoJsonMsg: GeoJsonMessage) => unknown;
 export type StatusListener = (isOnline: boolean) => unknown;
 
 export enum Accuracy {
-  minimum = 1,
-  low = 2,
-  balanced = 3,
-  high = 4,
-  maximum = 5,
+  Minimum = 1,
+  Low = 2,
+  Balanced = 3,
+  High = 4,
+  Maximum = 5,
 }
 
 export type Resolution = {
@@ -19,6 +19,6 @@ export type Resolution = {
 };
 
 export enum ClientTypes {
-  subscriber = 'subscriber',
-  publisher = 'publisher',
+  Subscriber = 'subscriber',
+  Publisher = 'publisher',
 }
