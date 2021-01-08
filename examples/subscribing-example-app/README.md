@@ -4,12 +4,10 @@ This is a demo of using an Ably data stream to place an animating marker on a ma
 
 ## To run locally
 
-First configure `TokenRequests` by creating an `.env` file in the root of the web folder and add your [Ably API key](https://support.ably.com/a/solutions/articles/3000030502) and Google API Key/Mapbox access token as below:
+First configure `TokenRequests` by creating an `.env` file in the root of the web folder and add your [Ably API key](https://support.ably.com/a/solutions/articles/3000030502) as below:
 
 ```bash
 ABLY_API_KEY=yourably:apikeyhere
-GOOGLE_API_KEY=yourgooglemapsapikeyhere
-MAPBOX_API_KEY=yourmapboxaccesstokenhere
 ```
 
 If you are running the app for the first time, then install the dependencies, in the web folder run:
@@ -49,6 +47,8 @@ Each HTML file references its own [JavaScript module](https://developer.mozilla.
 
 The Mapbox and Google Maps `script.js` modules are very similar, and do the following:
 
+* If the URL does not already contain an API key for the relevant map provider prompts the user using `window.prompt` to enter their own.
+* Instantiates the Mapbox/Google Maps SDK.
 * Create an initial location to draw the world map at.
 * Find an HTML element to display the map in.
 * Create an instance of the respective mapping SDk.

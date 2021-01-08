@@ -5,7 +5,7 @@ export class GoogleMapsMarker {
         this.map = map;
         this.current = markerCoordinate;
         this.lastCompassDirection = "N";
-        this.marker = new google.maps.Marker({ icon: "driverN.png", map: map });
+        this.marker = new google.maps.Marker({ icon: "/driverN.png", map: map });
         this.map.setZoom(16);
     }
 
@@ -20,7 +20,7 @@ export class GoogleMapsMarker {
         const compass = targetCoordinate.compassDirection;
 
         if (compass && compass !== this.lastCompassDirection) {
-            this.marker.setIcon(`driver${compass}.png`);
+            this.marker.setIcon(`/driver${compass}.png`);
             this.lastCompassDirection = compass;
         }
     }
