@@ -47,7 +47,8 @@ Each HTML file references its own [JavaScript module](https://developer.mozilla.
 
 The Mapbox and Google Maps `script.js` modules are very similar, and do the following:
 
-* Request an API key from the user using `window.prompt` and use the key to instantiate the Mapbox/Google Maps SDK.
+* If the URL does not already contain an API key for the relevant map provider prompts the user using `window.prompt` to enter their own.
+* Instantiates the Mapbox/Google Maps SDK.
 * Create an initial location to draw the world map at.
 * Find an HTML element to display the map in.
 * Create an instance of the respective mapping SDk.
