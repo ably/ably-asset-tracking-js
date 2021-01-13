@@ -47,7 +47,7 @@ class AssetSubscriber {
     if (!this.assetConnection) {
       throw new Error('Cannot change resolution; no asset is currently being tracked.');
     } else {
-      return this.assetConnection.performChangeResolution(resolution);
+      await this.assetConnection.performChangeResolution(resolution);
     }
   };
 
