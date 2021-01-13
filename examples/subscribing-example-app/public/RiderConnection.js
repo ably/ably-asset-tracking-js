@@ -1,9 +1,25 @@
 import { Vehicle } from './Vehicle.js';
 import { Coordinate } from './Coordinate.js';
 
+const lowResolution = {
+  accuracy: 2,
+  desiredInterval: 5000,
+  minimumDisplacement: 15,  
+};
+
+const highResolution = {
+  accuracy: 4,
+  desiredInterval: 1000,
+  minimumDisplacement: 5,
+};
+
+const zoomThreshold = 14;
+
 export class RiderConnection {
-  constructor(createMapSpecificMarker) {
+  constructor(createMapSpecificMarker, createMapSpecificZoomListener, initialZoomLevel) {
     this.createMapSpecificMarker = createMapSpecificMarker;
+    this.createMapSpecificZoomListener = createMapSpecificZoomListener;
+    this.hiRes = initialZoomLevel > 14;
     this.assetSubscriber = new AblyAssetTracking.AssetSubscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onEnhancedLocationUpdate: (message) => {
@@ -12,6 +28,16 @@ export class RiderConnection {
       onStatusUpdate: (status) => {
         this.statusUpdateCallback(status);
       },
+      resolution: this.hiRes ? lowResolution : highResolution,
+    });
+    createMapSpecificZoomListener((zoom) => {
+      if (zoom > zoomThreshold && !this.hiRes) {
+        this.hiRes = true;
+        this.assetSubscriber.sendChangeRequest(highResolution);
+      } else if (zoom <= zoomThreshold && this.hiRes) {
+        this.hiRes = false;
+        this.assetSubscriber.sendChangeRequest(lowResolution);
+      }
     });
     this.shouldSnap = false;
   }

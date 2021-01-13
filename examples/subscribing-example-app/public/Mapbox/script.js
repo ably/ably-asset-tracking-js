@@ -15,11 +15,17 @@ mapboxgl.accessToken = accessToken;
   const mapElement = "map";
   const map = new mapboxgl.Map({ center: position.toGeoJson(), zoom: 15, container: mapElement, style: 'mapbox://styles/mapbox/streets-v11' });
 
+  function createZoomListener(cb) {
+    map.on('zoom', () => {
+      cb(map.getZoom());
+    })
+  };``
+
   function createMarker(coordinate) {
     return new MapBoxMarker(map, coordinate);
   };
 
-  const riderConnection = new RiderConnection(createMarker);
+  const riderConnection = new RiderConnection(createMarker, createZoomListener, map.getZoom());
   await riderConnection.connect();
 
   bindUi(riderConnection);    

@@ -16,13 +16,19 @@ script.defer = true;
 async function createMap() {
   const position = new Coordinate(0, 0);
   const mapElement = document.getElementById("map");
-  const map = new google.maps.Map(mapElement, { center: position, zoom: 3 });
+  const map = new google.maps.Map(mapElement, { center: position, zoom: 3 })
+
+  function createZoomListener(cb) {
+    map.addListener('zoom_changed', () => {
+      cb(map.zoom);
+    });
+  }
 
   function createMarker(coordinate) {
     return new GoogleMapsMarker(map, coordinate);
   }
 
-  const riderConnection = new RiderConnection(createMarker);
+  const riderConnection = new RiderConnection(createMarker, createZoomListener, map.zoom);
   await riderConnection.connect(); 
   
   bindUi(riderConnection);   
