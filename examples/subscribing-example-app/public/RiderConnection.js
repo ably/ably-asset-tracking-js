@@ -1,14 +1,16 @@
 import { Vehicle } from './Vehicle.js';
 import { Coordinate } from './Coordinate.js';
 
+const { Accuracy, AssetSubscriber } = AblyAssetTracking;
+
 const lowResolution = {
-  accuracy: 2,
-  desiredInterval: 5000,
-  minimumDisplacement: 15,  
+  accuracy: Accuracy.Low,
+  desiredInterval: 5000, // Desired time between updates, in milliseconds.
+  minimumDisplacement: 15, // Desired minimum positional granularity required, in meters.
 };
 
 const highResolution = {
-  accuracy: 4,
+  accuracy: Accuracy.High,
   desiredInterval: 1000,
   minimumDisplacement: 5,
 };
@@ -20,7 +22,7 @@ export class RiderConnection {
     this.createMapSpecificMarker = createMapSpecificMarker;
     this.createMapSpecificZoomListener = createMapSpecificZoomListener;
     this.hiRes = initialZoomLevel > 14;
-    this.assetSubscriber = new AblyAssetTracking.AssetSubscriber({
+    this.assetSubscriber = new AssetSubscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onEnhancedLocationUpdate: (message) => {
         this.processMessage(message);
@@ -58,13 +60,13 @@ export class RiderConnection {
     if (!this.rider) {
       const marker = this.createMapSpecificMarker(locationCoordinate);
       this.rider = new Vehicle(riderId, true, marker);
-      
+
       marker.focus();
     }
 
     this.rider.move(locationCoordinate, this.shouldSnap);
   }
-  
+
   onStatusUpdate(callbackFunction) {
     this.statusUpdateCallback = callbackFunction;
   }
