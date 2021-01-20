@@ -65,7 +65,7 @@ For example, here is the Google `script.js`:
   const mapElement = document.getElementById("map"); // Find mapping element
   const map = new google.maps.Map(mapElement, { center: position, zoom: 3 }); // Initilise GMaps SDK
 
-  // Create `createZoonListener` function so that RiderConnection can increase resolution when a user zooms in to the map
+  // Create function that RiderConnection will use to increase resolution when a user zooms in to the map
   function createZoomListener(cb) {
     map.addListener('zoom_changed', () => {
       cb(map.zoom);
