@@ -3,7 +3,7 @@ import { ClientTypes, LocationListener, Resolution, StatusListener } from '../ty
 import Logger from './utils/Logger';
 import { setImmediate } from './utils/utils';
 
-enum EventNames {
+export enum EventNames {
   Raw = 'raw',
   Enhanced = 'enhanced',
 }
@@ -58,7 +58,7 @@ class AssetConnection {
 
   performChangeResolution = async (resolution: Resolution): Promise<void> => {
     return this.channel.presence.update({
-      type: ClientTypes.Publisher,
+      type: ClientTypes.Subscriber,
       resolution,
     });
   };
