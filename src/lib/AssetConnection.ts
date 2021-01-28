@@ -57,7 +57,7 @@ class AssetConnection {
   };
 
   performChangeResolution = async (resolution: Resolution): Promise<void> => {
-    return this.channel.presence.update({
+    await this.channel.presence.update({
       type: ClientTypes.Subscriber,
       resolution,
     });

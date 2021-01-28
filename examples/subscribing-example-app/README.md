@@ -53,6 +53,7 @@ The Mapbox and Google Maps `script.js` modules are very similar, and do the foll
 * Find an HTML element to display the map in.
 * Create an instance of the respective mapping SDk.
 * Implement a factory function which is responsible for creating a map marker (in a format that the active mapping SDK understands).
+* Implements functions to add listeners to zoom in/out events on the given map.
 * Create an instance of a class called RiderConnection, and connects to it.
 * Wires up the UI.
 
@@ -64,13 +65,20 @@ For example, here is the Google `script.js`:
   const mapElement = document.getElementById("map"); // Find mapping element
   const map = new google.maps.Map(mapElement, { center: position, zoom: 3 }); // Initilise GMaps SDK
 
+  // Create function that RiderConnection will use to increase resolution when a user zooms in to the map
+  function createZoomListener(cb) {
+    map.addListener('zoom_changed', () => {
+      cb(map.zoom);
+    });
+  }
+
   // Create `createMarker` factory function that creates Google Maps Marker
   function createMarker(coordinate) {
     return new GoogleMapsMarker(map, coordinate);
   }
 
   // Connect to Ably using our `RiderConnection` class
-  const riderConnection = new RiderConnection(createMarker);
+  const riderConnection = new RiderConnection(createMarker, createZoomListener, map.zoom);
   await riderConnection.connect();
   
   // Wire up UI buttons
@@ -87,18 +95,24 @@ and the very similar MapBox `script.js`:
   const mapElement = "map";
   const map = new mapboxgl.Map({ center: position.toGeoJson(), zoom: 15, container: mapElement, style: 'mapbox://styles/mapbox/streets-v11' });
 
+  function createZoomListener(cb) {
+    map.on('zoom', () => {
+      cb(map.getZoom());
+    })
+  };
+
   function createMarker(coordinate) {
     return new MapBoxMarker(map, coordinate);
   }
 
-  const riderConnection = new RiderConnection(createMarker);
+  const riderConnection = new RiderConnection(createMarker, createZoomListener, map.getZoom());
   await riderConnection.connect();
 
   bindUi(riderConnection);
 })();
 ```
 
-The only places that these two code samples differ, are the `createMarker` factory functions (which create either a `GoogleMapsMarker` or a `MapBoxMarker`), and where we call either `google.maps.Map` or `mapboxgl.Map` to construct the map.
+The only places that these two code samples differ, are the `createMarker` factory functions (which create either a `GoogleMapsMarker` or a `MapBoxMarker`), the implementation of `createZoomListener`, and where we call either `google.maps.Map` or `mapboxgl.Map` to construct the map.
 
 The logic that deals with creating and managing map markers differs between each platform, it is provider specific, so there are two completely distinct implementations in [public/Google/GoogleMapsMarker.js](public/Google/GoogleMapsMarker.js) and [public/MapBox/MapBoxMarker.js](public/Google/GoogleMapsMarker.js).
 
@@ -131,6 +145,7 @@ This class has to:
 * Processes messages from Ably.
 * Create an instance of a `Vehicle` whenever a rider is detected.
 * Track whether the driver is online or not.
+* Change the requested resolution to an appropriate level depending on how far the user has zoomed in to the map.
 
 #### RiderConnection implementation
 
@@ -138,8 +153,10 @@ The constructor is defined in [script.js](public/RiderConnection.js):
 
 ```js
 export class RiderConnection {
-  constructor(createMapSpecificMarker) {
+  constructor(createMapSpecificMarker, createMapSpecificZoomListener, initialZoomLevel) {
     this.createMapSpecificMarker = createMapSpecificMarker;
+    this.createMapSpecificZoomListener = createMapSpecificZoomListener;
+    this.hiRes = initialZoomLevel > 14;
     this.assetSubscriber = new AblyAssetTracking.AssetSubscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onEnhancedLocationUpdate: (message) => {
@@ -148,12 +165,25 @@ export class RiderConnection {
       onStatusUpdate: (status) => {
         this.statusUpdateCallback(status);
       },
+      resolution: this.hiRes ? lowResolution : highResolution,
+    });
+    createMapSpecificZoomListener((zoom) => {
+      if (zoom > zoomThreshold && !this.hiRes) {
+        this.hiRes = true;
+        this.assetSubscriber.sendChangeRequest(highResolution);
+      } else if (zoom <= zoomThreshold && this.hiRes) {
+        this.hiRes = false;
+        this.assetSubscriber.sendChangeRequest(lowResolution);
+      }
     });
     this.shouldSnap = false;
   }
 ```
 
-This constructor takes a single parameter - the `createMapSpecificMarker` function - that is defined as `createMarker` in the `script.js` file - and sets up some defaults.
+This constructor takes a three parameters:
+ - the `createMapSpecificMarker` function - that is defined as `createMarker` in the `script.js` file - and sets up some defaults.
+ - the `createMapSpecificZoomListener` function - which is defined as `createZoomListener` in the `script.js` file.
+ - the initial zoom level of the map.
 
 Callbacks are provided to the Ably AssetSubscriber constructor to define behaviour for when the drivers status and location are updated.
 
