@@ -2,6 +2,7 @@ import CustomEventReporter from './support/CustomEventReporter';
 import mochaHooks from './support/mochaHooks';
 
 mocha.rootHooks(mochaHooks);
+mocha.reporter(CustomEventReporter);
 mocha.timeout(10_000);
 
 // This will search for files ending in .test.js and require them
