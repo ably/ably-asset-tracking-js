@@ -39,8 +39,6 @@ class AssetConnection {
       params: { rewind: '1' },
     });
 
-    this.joinChannelPresence();
-
     if (this.onRawLocationUpdate) {
       this.subscribeForRawEvents(this.onRawLocationUpdate);
     }
@@ -63,6 +61,19 @@ class AssetConnection {
     });
   };
 
+  joinChannelPresence = async (): Promise<void> => {
+    this.channel.presence.subscribe(this.onPresenceMessage);
+    return this.channel.presence
+      .enterClient(this.ably.auth.clientId, {
+        type: ClientTypes.Subscriber,
+        resolution: this.resolution,
+      })
+      .catch((reason) => {
+        this.logger.logError(`Error entering channel presence: ${reason}`);
+        throw new Error(reason);
+      });
+  };
+
   private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
     this.channel.subscribe(EventNames.Raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
@@ -83,19 +94,6 @@ class AssetConnection {
         setImmediate(() => enhancedLocationListener(parsedMessage));
       }
     });
-  };
-
-  private joinChannelPresence = async () => {
-    this.channel.presence.subscribe(this.onPresenceMessage);
-    this.channel.presence
-      .enterClient(this.ably.auth.clientId, {
-        type: ClientTypes.Subscriber,
-        resolution: this.resolution,
-      })
-      .catch((reason) => {
-        this.logger.logError(`Error entering channel presence: ${reason}`);
-        throw new Error(reason);
-      });
   };
 
   private leaveChannelPresence = async () => {

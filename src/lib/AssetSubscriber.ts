@@ -30,7 +30,7 @@ class AssetSubscriber {
     this.resolution = options.resolution;
   }
 
-  start(trackingId: string): void {
+  start = async (trackingId: string): Promise<void> => {
     this.assetConnection = new AssetConnection(
       this.logger,
       trackingId,
@@ -40,7 +40,8 @@ class AssetSubscriber {
       this.onStatusUpdate,
       this.resolution
     );
-  }
+    await this.assetConnection.joinChannelPresence();
+  };
 
   sendChangeRequest = async (resolution: Resolution): Promise<void> => {
     this.resolution = resolution;
