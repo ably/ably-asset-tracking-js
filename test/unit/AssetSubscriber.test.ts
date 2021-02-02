@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import AssetConnection from '../src/lib/AssetConnection';
-import AssetSubscriber from '../src/lib/AssetSubscriber';
-import Logger from '../src/lib/utils/Logger';
+import AssetConnection from '../../src/lib/AssetConnection';
+import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import Logger from '../../src/lib/utils/Logger';
 import { mocked } from 'ts-jest/utils';
 
 // This is the simplest constructor options object that Typescript will allow to compile
@@ -11,8 +11,9 @@ const basicOptions = {
 
 const mockClose = jest.fn();
 const mockPerformChangeResolution = jest.fn();
-jest.mock('../src/lib/AssetConnection');
-jest.mock('../src/lib/utils/Logger');
+const mockJoinChannelPresence = jest.fn();
+jest.mock('../../src/lib/AssetConnection');
+jest.mock('../../src/lib/utils/Logger');
 const mockAssetConnection = mocked(AssetConnection, true);
 
 describe('AssetSubscriber', () => {
@@ -20,15 +21,12 @@ describe('AssetSubscriber', () => {
     mockAssetConnection.mockReturnValue(({
       close: mockClose,
       performChangeResolution: mockPerformChangeResolution,
+      joinChannelPresence: mockJoinChannelPresence,
     } as unknown) as AssetConnection);
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-  });
-
-  it('passes', () => {
-    expect(true).toBe(true);
   });
 
   it('should construct a new Logger on creation', () => {
@@ -86,11 +84,17 @@ describe('AssetSubscriber', () => {
     );
   });
 
+  it('should call AssetConnection.joinChannelPresence() when start is called', async () => {
+    const subscriber = new AssetSubscriber(basicOptions);
+
+    await subscriber.start('trackingId');
+    expect(mockJoinChannelPresence).toHaveBeenCalledTimes(1);
+  });
+
   it('should call AssetConnection.close() when .stop() is called', async () => {
     const subscriber = new AssetSubscriber(basicOptions);
-    // const mockStop = mockAssetConnection.mock('close');
 
-    subscriber.start('trackingId');
+    await subscriber.start('trackingId');
     await subscriber.stop();
     expect(mockClose).toHaveBeenCalledTimes(1);
   });
@@ -98,7 +102,7 @@ describe('AssetSubscriber', () => {
   it('should no longer have an AssetConnection once .stop() has been called', async () => {
     const subscriber = new AssetSubscriber(basicOptions);
 
-    subscriber.start('trackingId');
+    await subscriber.start('trackingId');
 
     expect(subscriber.assetConnection).toBeInstanceOf(Object);
 
@@ -115,7 +119,7 @@ describe('AssetSubscriber', () => {
       minimumDisplacement: 3,
     };
 
-    subscriber.start('trackingId');
+    await subscriber.start('trackingId');
     await subscriber.sendChangeRequest(resolution);
 
     expect(mockPerformChangeResolution).toHaveBeenCalledTimes(1);

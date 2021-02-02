@@ -6,7 +6,7 @@
   "typings": "index.d.ts",
   "scripts": {
     "build": "webpack",
-    "test": "jest",
+    "test": "jest ./test/unit",
     "lint": "eslint .",
     "check-formatting": "prettier -c src/**/*.ts test/**/*.ts"
   },
