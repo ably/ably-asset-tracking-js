@@ -13,4 +13,5 @@ jobs:
           heroku_api_key: £{{ secrets.HEROKU_API_KEY }}
           heroku_app_name: "ably-asset-tracking-demo"
           heroku_email: heroku@ably.io
+          dontuseforce: false
           procfile: "web: cd examples/subscribing-example-app && npm ci && npm start"
