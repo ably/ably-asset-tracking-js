@@ -1,6 +1,27 @@
-export type GeoJsonMessage = unknown;
+import { Feature, Point } from 'geojson';
 
-export type LocationListener = (geoJsonMsg: GeoJsonMessage) => unknown;
+type GeoJsonProperties = {
+  accuracyHorizontal: number;
+  altitude: number;
+  bearing: number;
+  speed: number;
+  time: number;
+};
+
+export type Location = Feature<Point, GeoJsonProperties>;
+
+export enum LocationUpdateType {
+  Predicted = 'PREDICTED',
+  Actual = 'ACTUAL',
+}
+
+export type LocationUpdate = {
+  location: Location;
+  intermediateLocations: Array<Location>;
+  type: LocationUpdateType;
+};
+
+export type LocationListener = (locationUpdate: LocationUpdate) => unknown;
 
 export type StatusListener = (isOnline: boolean) => unknown;
 
