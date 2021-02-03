@@ -26,22 +26,6 @@ describe('location', () => {
     });
   });
 
-  it('can recieve raw location updates', (done) => {
-    const location = { mock: 'location' };
-    const channel = getRandomChannelName();
-
-    const onRawLocationUpdate = (msg: unknown) => {
-      expect(msg).to.deep.equal(location);
-      subscriber.stop().then(done);
-    };
-
-    const subscriber = new AssetSubscriber({ ablyOptions, onRawLocationUpdate });
-
-    subscriber.start(channel).then(() => {
-      publisher.sendRawMessage(channel, location);
-    });
-  });
-
   it('can recieve enhanced location updates', (done) => {
     const location = { mock: 'location2' };
     const channel = getRandomChannelName();
@@ -71,22 +55,6 @@ describe('location', () => {
 
     publisher.sendEnhancedMessage(channel, location).then(() => {
       subscriber.start(channel);
-    });
-  });
-
-  it('can receive arrays of raw location updates', (done) => {
-    const location = { mock: 'location4' };
-    const channel = getRandomChannelName();
-
-    const onRawLocationUpdate = (msg: unknown) => {
-      expect(msg).to.deep.equal(location);
-      subscriber.stop().then(done);
-    };
-
-    const subscriber = new AssetSubscriber({ ablyOptions, onRawLocationUpdate });
-
-    subscriber.start(channel).then(() => {
-      publisher.sendRawMessage(channel, [location]);
     });
   });
 

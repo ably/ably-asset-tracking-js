@@ -5,7 +5,6 @@ import Logger, { LoggerOptions } from './utils/Logger';
 
 export type SubscriberOptions = {
   ablyOptions: AblyTypes.ClientOptions;
-  onRawLocationUpdate?: LocationListener;
   onEnhancedLocationUpdate?: LocationListener;
   onStatusUpdate?: StatusListener;
   loggerOptions?: LoggerOptions;
@@ -15,7 +14,6 @@ export type SubscriberOptions = {
 class AssetSubscriber {
   ablyOptions: AblyTypes.ClientOptions;
   onStatusUpdate?: StatusListener;
-  onRawLocationUpdate?: LocationListener;
   onEnhancedLocationUpdate?: LocationListener;
   logger: Logger;
   assetConnection?: AssetConnection;
@@ -25,7 +23,6 @@ class AssetSubscriber {
     this.logger = new Logger(options.loggerOptions);
     this.ablyOptions = options.ablyOptions;
     this.onStatusUpdate = options.onStatusUpdate;
-    this.onRawLocationUpdate = options.onRawLocationUpdate;
     this.onEnhancedLocationUpdate = options.onEnhancedLocationUpdate;
     this.resolution = options.resolution;
   }
@@ -35,7 +32,6 @@ class AssetSubscriber {
       this.logger,
       trackingId,
       this.ablyOptions,
-      this.onRawLocationUpdate,
       this.onEnhancedLocationUpdate,
       this.onStatusUpdate,
       this.resolution

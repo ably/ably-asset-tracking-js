@@ -50,7 +50,6 @@ describe('AssetSubscriber', () => {
   it('should call the AssetConnection constructor with correct args when .start() is called', () => {
     const ablyOptions = {};
     const onStatusUpdate = () => {};
-    const onRawLocationUpdate = () => {};
     const onEnhancedLocationUpdate = () => {};
     const loggerOptions = {
       level: 5,
@@ -64,7 +63,6 @@ describe('AssetSubscriber', () => {
     const subscriber = new AssetSubscriber({
       ablyOptions,
       onStatusUpdate,
-      onRawLocationUpdate,
       onEnhancedLocationUpdate,
       loggerOptions,
       resolution,
@@ -77,7 +75,6 @@ describe('AssetSubscriber', () => {
       subscriber.logger,
       trackingId,
       ablyOptions,
-      onRawLocationUpdate,
       onEnhancedLocationUpdate,
       onStatusUpdate,
       resolution
