@@ -24,7 +24,7 @@ export class RiderConnection {
     this.hiRes = initialZoomLevel > 14;
     this.assetSubscriber = new AssetSubscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
-      onEnhancedLocationUpdate: (message) => {
+      onLocationUpdate: (message) => {
         this.processMessage(message);
       },
       onStatusUpdate: (status) => {

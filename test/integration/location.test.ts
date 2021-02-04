@@ -30,12 +30,12 @@ describe('location', () => {
     const location = { mock: 'location2' };
     const channel = getRandomChannelName();
 
-    const onEnhancedLocationUpdate = (msg: unknown) => {
+    const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onEnhancedLocationUpdate });
+    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
 
     subscriber.start(channel).then(() => {
       publisher.sendEnhancedMessage(channel, location);
@@ -46,12 +46,12 @@ describe('location', () => {
     const location = { mock: 'location3' };
     const channel = getRandomChannelName();
 
-    const onEnhancedLocationUpdate = (msg: unknown) => {
+    const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onEnhancedLocationUpdate });
+    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
 
     publisher.sendEnhancedMessage(channel, location).then(() => {
       subscriber.start(channel);
@@ -62,12 +62,12 @@ describe('location', () => {
     const location = { mock: 'location5' };
     const channel = getRandomChannelName();
 
-    const onEnhancedLocationUpdate = (msg: unknown) => {
+    const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onEnhancedLocationUpdate });
+    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
 
     subscriber.start(channel).then(() => {
       publisher.sendEnhancedMessage(channel, [location]);
