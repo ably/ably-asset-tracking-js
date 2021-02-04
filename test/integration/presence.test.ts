@@ -37,6 +37,16 @@ describe('presence', () => {
     });
   });
 
+  it('calls onStatusUpdate when publisher is already present', (done) => {
+    const channel = getRandomChannelName();
+    subscriber.onStatusUpdate = (status) => {
+      if (status) done();
+    };
+    publisher.enterPresence(channel).then(() => {
+      subscriber.start(channel);
+    });
+  });
+
   it('calls onStatusUpdate when publisher enters presence', (done) => {
     const channel = getRandomChannelName();
     subscriber.onStatusUpdate = (status) => {
