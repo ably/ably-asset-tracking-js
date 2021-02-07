@@ -1,5 +1,12 @@
 import { Feature, Point } from 'geojson';
-import { Accuracy, LocationUpdateType } from '../lib/constants';
+
+export type SubscriberOptions = {
+  ablyOptions: AblyTypes.ClientOptions;
+  onLocationUpdate?: api.LocationListener;
+  onStatusUpdate?: api.StatusListener;
+  loggerOptions?: LoggerOptions;
+  resolution?: api.Resolution;
+};
 
 type GeoJsonProperties = {
   accuracyHorizontal: number;
