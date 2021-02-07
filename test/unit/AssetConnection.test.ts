@@ -1,7 +1,7 @@
 import { Types } from 'ably';
 import AssetConnection, { EventNames } from '../../src/lib/AssetConnection';
 import Logger from '../../src/lib/utils/Logger';
-import { ClientTypes } from '../../src/types';
+import { ClientTypes } from '../../src/lib/constants';
 import { setImmediate } from '../../src/lib/utils/utils';
 import { mocked } from 'ts-jest/utils';
 

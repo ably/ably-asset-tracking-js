@@ -1,4 +1,5 @@
 import { Feature, Point } from 'geojson';
+import { Accuracy, LocationUpdateType } from '../lib/constants';
 
 type GeoJsonProperties = {
   accuracyHorizontal: number;
@@ -10,11 +11,6 @@ type GeoJsonProperties = {
 
 export type Location = Feature<Point, GeoJsonProperties>;
 
-export enum LocationUpdateType {
-  Predicted = 'PREDICTED',
-  Actual = 'ACTUAL',
-}
-
 export type LocationUpdate = {
   location: Location;
   intermediateLocations: Array<Location>;
@@ -25,21 +21,8 @@ export type LocationListener = (locationUpdate: LocationUpdate) => unknown;
 
 export type StatusListener = (isOnline: boolean) => unknown;
 
-export enum Accuracy {
-  Minimum = 1,
-  Low = 2,
-  Balanced = 3,
-  High = 4,
-  Maximum = 5,
-}
-
 export type Resolution = {
   accuracy: Accuracy;
   desiredInterval: number;
   minimumDisplacement: number;
 };
-
-export enum ClientTypes {
-  Subscriber = 'subscriber',
-  Publisher = 'publisher',
-}
