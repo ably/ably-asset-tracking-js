@@ -28,31 +28,52 @@ This repository also contains an example app that showcases how the Ably Asset T
 
 ### Usage
 
+Here is an example of how the SDK can be used:
+
 ```ts
-import AblyAssetTracking from 'ably-asset-tracking';
+import { AssetSubscriber, Accuracy } from 'ably-asset-tracking';
 
 const ablyOptions = {
-  key: '',
-  clientId: '',
+  key: ABLY_API_KEY,
+  clientId: 'asset-subscriber',
 };
 
-const trackingId: '';
-
+// Define a callback to be notified when a location update is recieved.
 const onLocationUpdate = (locationUpdate) => {
-  console.log(`Location update: ${locationUpdate}`);
+  console.log(`Location update recieved. Coordinates: ${locationUpdate.location.geometry.coordinates}`);
 };
 
+// Define a callback to be notified when the asset online status is updated.
 const onStatusUpdate = (isOnline) => {
   console.log(`Status update: Publisher is now ${isOnline ? 'online' : 'offline'}`);
 };
 
-const assetSubscriber = new AblyAssetTrackingAssetSubscriber({
+// Request a specific resolution to be considered by the publisher.
+const resolution = {
+  accuracy: Accuracy.High,
+  desiredInterval: 1000,
+  minimumDisplacement: 1,
+};
+
+// Initialise the subscriber.
+const subscriber = new AssetSubscriber({
   ablyOptions,
   onLocationUpdate,
   onStatusUpdate,
 });
 
-assetSubscriber.start(trackingId);
+(async () => {
+  // Start tracking an asset using its tracking identifier.
+  await subscriber.start('trackingId');
 
-assetSubscriber.stop();
+  // Request a new resolution to be considered by the publisher.
+  await subscriber.sendChangeRequest({
+    accuracy: Accuracy.Low,
+    desiredInterval: 3000,
+    minimumDisplacement: 5,
+  });
+
+  // Stop tracking the asset.
+  await subscriber.stop();
+})();
 ```
