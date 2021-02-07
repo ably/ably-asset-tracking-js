@@ -1,4 +1,5 @@
 import { Feature, Point } from 'geojson';
+import * as api from './api';
 
 export type SubscriberOptions = {
   ablyOptions: AblyTypes.ClientOptions;
