@@ -29,7 +29,7 @@ import { AssetSubscriber, Accuracy } from 'ably-asset-tracking';
 
 const ablyOptions = {
   key: ABLY_API_KEY,
-  clientId: 'asset-subscriber',
+  clientId: CLIENT_ID,
 };
 
 // Define a callback to be notified when a location update is recieved.
@@ -56,9 +56,11 @@ const subscriber = new AssetSubscriber({
   onStatusUpdate,
 });
 
+const trackingId = '<some application defined asset tracking identifier>';
+
 (async () => {
   // Start tracking an asset using its tracking identifier.
-  await subscriber.start('trackingId');
+  await subscriber.start(trackingId);
 
   // Request a new resolution to be considered by the publisher.
   await subscriber.sendChangeRequest({
