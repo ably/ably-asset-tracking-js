@@ -1,15 +1,7 @@
 import { Types as AblyTypes } from 'ably';
-import { LocationListener, Resolution, StatusListener } from '../types';
+import { LocationListener, Resolution, StatusListener, SubscriberOptions } from '../types';
 import AssetConnection from './AssetConnection';
-import Logger, { LoggerOptions } from './utils/Logger';
-
-export type SubscriberOptions = {
-  ablyOptions: AblyTypes.ClientOptions;
-  onLocationUpdate?: LocationListener;
-  onStatusUpdate?: StatusListener;
-  loggerOptions?: LoggerOptions;
-  resolution?: Resolution;
-};
+import Logger from './utils/Logger';
 
 class AssetSubscriber {
   ablyOptions: AblyTypes.ClientOptions;

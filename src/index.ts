@@ -1,4 +1,4 @@
 import AssetSubscriber from './lib/AssetSubscriber';
-import { Accuracy } from './types';
+import { Accuracy } from './lib/constants';
 
 export default { AssetSubscriber, Accuracy };

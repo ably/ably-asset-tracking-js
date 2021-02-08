@@ -1,5 +1,6 @@
 import Ably, { Types as AblyTypes } from 'ably';
-import { ClientTypes, LocationListener, Resolution, StatusListener } from '../types';
+import { LocationListener, Resolution, StatusListener } from '../types';
+import { ClientTypes } from './constants';
 import Logger from './utils/Logger';
 import { setImmediate } from './utils/utils';
 

@@ -1,6 +1,6 @@
 import Ably, { Types } from 'ably';
 import { EventNames } from '../../../src/lib/AssetConnection';
-import { ClientTypes } from '../../../src/types';
+import { ClientTypes } from '../../../src/lib/constants';
 
 export class MockPublisher {
   ably: Types.RealtimePromise;

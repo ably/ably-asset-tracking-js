@@ -1,5 +1,5 @@
-import AblyAssetTracking from './src';
+import { AssetSubscriber } from './src/types/api';
+import { Accuracy } from './src/lib/constants';
+export * from './src/types';
 
-declare module 'ably-asset-tracking' {
-  export default AblyAssetTracking;
-}
+export { AssetSubscriber, Accuracy };
