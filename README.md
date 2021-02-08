@@ -77,3 +77,7 @@ const subscriber = new AssetSubscriber({
 This repository also contains an example app that showcases how the Ably Asset Tracking SDK can be used:
 
 - the [Asset Subscribing example app](examples/subscribing-example-app/)
+
+## Development
+
+see [Contributing](CONTRIBUTING.md).
