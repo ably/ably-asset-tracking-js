@@ -1,11 +1,18 @@
 ## Contributing
 
-Unit tests are written in jest and can be run with `npm test`.
+### Testing
 
-Integration tests are written in mocha and can be run from a local webserver using `npm run test:webserver`. They can also be run in Chromium, Webkit, and Firefox using `npm run test:playwright`.
+Unit tests are written in [Jest](https://jestjs.io/) and can be run with `npm test`.
 
-JavaScript/Typescript code is linted using eslint. You can check that all relevant files pass the linting rules by running `npm run lint`.
+Integration tests are written in [Mocha](https://mochajs.org/) and can be run from a local webserver using `npm run test:webserver`. They can also be run in [Chromium](https://www.chromium.org/), [WebKit](https://webkit.org/), and [Firefox](https://t.co/uiLRlFZnpI?amp=1) using `npm run test:playwright`.
 
-JavaScript/TypeScript code is formatted using Prettier. You can check that all relevant files are formatted correctly by running `npm run check-formatting`.
+### Code Quality
 
-The project is built using webpack. You can build the project using `npm run build`. This will create a minified js bundle at `dist/main.js`.
+JavaScript/TypeScript code is:
+
+- linted using [ESLint](https://eslint.org/), by running `npm run lint`, checking that all relevant files pass the linting rules
+- formatted using [Prettier](https://prettier.io/), by running `npm run check-formatting`, checking that all relevant files are formatted correctly
+
+### Assembly
+
+The project is built using [webpack](https://webpack.js.org/). You can build the project using `npm run build`. This will create a [minified](https://en.wikipedia.org/wiki/Minification_(programming)) JS bundle at `dist/main.js`.
