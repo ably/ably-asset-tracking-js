@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/playwright-github-action@v1
       - run: npm ci
       - run: npm run lint
       - run: npm run check-formatting
       - run: npm test
+      - run: npm run test:playwright

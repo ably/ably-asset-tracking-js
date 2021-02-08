@@ -1,8 +1,8 @@
 import { Types } from 'ably';
-import AssetConnection, { EventNames } from '../src/lib/AssetConnection';
-import Logger from '../src/lib/utils/Logger';
-import { ClientTypes } from '../src/types';
-import { setImmediate } from '../src/lib/utils/utils';
+import AssetConnection, { EventNames } from '../../src/lib/AssetConnection';
+import Logger from '../../src/lib/utils/Logger';
+import { ClientTypes } from '../../src/types';
+import { setImmediate } from '../../src/lib/utils/utils';
 import { mocked } from 'ts-jest/utils';
 
 const mockAblyRealtimePromise = jest.fn(); // mocked Ably.Realtime.Promise constructor
@@ -21,7 +21,7 @@ const trackingId = 'trackingId';
 const clientId = 'clientId';
 const ablyOptions = {};
 
-jest.mock('../src/lib/utils/utils');
+jest.mock('../../src/lib/utils/utils');
 jest.mock('ably', () => ({
   Realtime: {
     Promise: (options: Types.ClientOptions) => mockAblyRealtimePromise(options),
@@ -74,19 +74,27 @@ describe('AssetConnection', () => {
     });
   });
 
-  it('should subscribe to presence events when constructor is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions);
+  it('should subscribe to presence events when .joinChannelPresence() is called', () => {
+    new AssetConnection(new Logger(), trackingId, ablyOptions).joinChannelPresence();
 
     expect(mockPresenceSubscribe).toHaveBeenCalledTimes(1);
   });
 
-  it('should enter channel presence with correct params when constructor is called', () => {
+  it('should enter channel presence with correct params when .joinChannelPresence() is called', () => {
     const resolution = {
       accuracy: 2,
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, undefined, resolution);
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      resolution
+    ).joinChannelPresence();
 
     expect(mockEnterClient).toHaveBeenCalledTimes(1);
     expect(mockEnterClient).toHaveBeenCalledWith(clientId, { type: ClientTypes.Subscriber, resolution });
@@ -109,7 +117,14 @@ describe('AssetConnection', () => {
       action: 'enter',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate);
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
@@ -124,7 +139,14 @@ describe('AssetConnection', () => {
       action: 'leave',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate);
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
