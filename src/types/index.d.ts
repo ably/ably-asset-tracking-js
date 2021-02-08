@@ -8,18 +8,22 @@ export type SubscriberOptions = {
    * The configuration for Ably connection.
    */
   ablyOptions: AblyTypes.ClientOptions;
+
   /**
    * A callback to be notified when an enhanced location update is available.
    */
   onLocationUpdate?: LocationListener;
+
   /**
    * A callback to be notified when the online status of the asset changes.
    */
   onStatusUpdate?: StatusListener;
+
   /**
    * The logging configuration.
    */
   loggerOptions?: LoggerOptions;
+
   /**
    * The desired resolution of updates, to be requested from the remote publisher.
    */
