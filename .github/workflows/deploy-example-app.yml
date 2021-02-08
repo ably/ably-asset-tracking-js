@@ -8,6 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: git remote add heroku https://git.heroku.com/vast-hollows-59409.git
       - uses: akhileshns/heroku-deploy@v3.8.8
         with:
           heroku_api_key: £{{ secrets.HEROKU_API_KEY }}
