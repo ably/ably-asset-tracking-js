@@ -1,8 +1,8 @@
-## Ably Asset Tracking SDK for JavaScript
+# Ably Asset Tracking SDK for JavaScript
 
 ![.github/workflows/check.yml](https://github.com/ably/ably-asset-tracking-js/workflows/.github/workflows/check.yml/badge.svg)
 
-### Overview
+## Overview
 
 Ably Asset Tracking SDKs provide an easy way to track multiple assets with realtime location updates powered by [Ably](https://ably.io/) realtime network and Mapbox [Navigation SDK](https://docs.mapbox.com/android/navigation/overview/) with location enhancement.
 
@@ -20,7 +20,7 @@ Ably Asset Tracking is:
 
 This repository contains the Asset Subscribing SDK for Web.
 
-### Usage
+## Usage
 
 Here is an example of how the SDK can be used:
 
