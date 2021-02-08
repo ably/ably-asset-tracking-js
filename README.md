@@ -38,12 +38,8 @@ const ablyOptions = {
 
 const trackingId: '';
 
-const onRawLocationUpdate = (geoJsonMessage) => {
-  console.log(`Raw location update: ${geoJsonMessage}`);
-};
-
-const onEnhancedLocationUpdate = (geoJsonMessage) => {
-  console.log(`Enhanced location update: ${geoJsonMessage}`);
+const onLocationUpdate = (locationUpdate) => {
+  console.log(`Location update: ${locationUpdate}`);
 };
 
 const onStatusUpdate = (isOnline) => {
@@ -52,8 +48,7 @@ const onStatusUpdate = (isOnline) => {
 
 const assetSubscriber = new AblyAssetTrackingAssetSubscriber({
   ablyOptions,
-  onRawLocationUpdate,
-  onEnhancedLocationUpdate,
+  onLocationUpdate,
   onStatusUpdate,
 });
 
