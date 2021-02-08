@@ -1,6 +1,6 @@
 ## Contributing
 
-Unit tests are written in jest and can be run with `npm t`.
+Unit tests are written in jest and can be run with `npm test`.
 
 Integration tests are written in mocha and can be run from a local webserver using `npm run test:webserver`. They can also be run in Chromium, Webkit, and Firefox using `npm run test:playwright`.
 
