@@ -1,12 +1,12 @@
-## Ably Asset Tracking SDK for JavaScript
+# Ably Asset Tracking SDK for JavaScript
 
 ![.github/workflows/check.yml](https://github.com/ably/ably-asset-tracking-js/workflows/.github/workflows/check.yml/badge.svg)
 
-### Overview
+## Overview
 
-Ably Asset Tracking SDKs provide an easy way to track multiple assets with realtime location updates powered by [Ably](https://ably.io/) realtime network.
+Ably Asset Tracking SDKs provide an easy way to track multiple assets with realtime location updates powered by [Ably](https://ably.io/) realtime network and Mapbox [Navigation SDK](https://docs.mapbox.com/android/navigation/overview/) with location enhancement.
 
-**Status:** this is a preview version of the SDK. That means that it contains a subset of the final SDK functionality, and the APIs are subject to change.
+**Status:** this is a preview version of the SDK. That means that it contains a subset of the final SDK functionality, and the APIs are subject to change. The latest release of this SDK is available in the [Released section](https://github.com/ably/ably-asset-tracking-js/releases) of this repository.
 
 Ably Asset Tracking is:
 
@@ -20,39 +20,66 @@ Ably Asset Tracking is:
 
 This repository contains the Asset Subscribing SDK for Web.
 
+## Usage
+
+Here is an example of how the SDK can be used:
+
+```ts
+import { AssetSubscriber, Accuracy } from 'ably-asset-tracking';
+
+const ablyOptions = {
+  key: ABLY_API_KEY,
+  clientId: CLIENT_ID,
+};
+
+// Define a callback to be notified when a location update is recieved.
+const onLocationUpdate = (locationUpdate) => {
+  console.log(`Location update recieved. Coordinates: ${locationUpdate.location.geometry.coordinates}`);
+};
+
+// Define a callback to be notified when the asset online status is updated.
+const onStatusUpdate = (isOnline) => {
+  console.log(`Status update: Publisher is now ${isOnline ? 'online' : 'offline'}`);
+};
+
+// Request a specific resolution to be considered by the publisher.
+const resolution = {
+  accuracy: Accuracy.High,
+  desiredInterval: 1000,
+  minimumDisplacement: 1,
+};
+
+// Initialise the subscriber.
+const subscriber = new AssetSubscriber({
+  ablyOptions,
+  onLocationUpdate,
+  onStatusUpdate,
+});
+
+const trackingId = '<some application defined asset tracking identifier>';
+
+(async () => {
+  // Start tracking an asset using its tracking identifier.
+  await subscriber.start(trackingId);
+
+  // Request a new resolution to be considered by the publisher.
+  await subscriber.sendChangeRequest({
+    accuracy: Accuracy.Low,
+    desiredInterval: 3000,
+    minimumDisplacement: 5,
+  });
+
+  // Stop tracking the asset.
+  await subscriber.stop();
+})();
+```
+
 ## Example App
 
 This repository also contains an example app that showcases how the Ably Asset Tracking SDK can be used:
 
 - the [Asset Subscribing example app](examples/subscribing-example-app/)
 
-### Usage
+## Development
 
-```ts
-import AblyAssetTracking from 'ably-asset-tracking';
-
-const ablyOptions = {
-  key: '',
-  clientId: '',
-};
-
-const trackingId: '';
-
-const onLocationUpdate = (locationUpdate) => {
-  console.log(`Location update: ${locationUpdate}`);
-};
-
-const onStatusUpdate = (isOnline) => {
-  console.log(`Status update: Publisher is now ${isOnline ? 'online' : 'offline'}`);
-};
-
-const assetSubscriber = new AblyAssetTrackingAssetSubscriber({
-  ablyOptions,
-  onLocationUpdate,
-  onStatusUpdate,
-});
-
-assetSubscriber.start(trackingId);
-
-assetSubscriber.stop();
-```
+see [Contributing](CONTRIBUTING.md).
