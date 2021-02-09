@@ -1,4 +1,4 @@
-import AssetSubscriber from './lib/AssetSubscriber';
+import Subscriber from './lib/Subscriber';
 import { Accuracy } from './lib/constants';
 
-export default { AssetSubscriber, Accuracy };
+export default { Subscriber, Accuracy };

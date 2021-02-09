@@ -1,6 +1,6 @@
 import { Types } from 'ably';
 import { expect } from 'chai';
-import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import Subscriber from '../../src/lib/Subscriber';
 import { getRandomChannelName, MockPublisher } from './support/testUtils';
 
 describe('resolution', () => {
@@ -33,7 +33,7 @@ describe('resolution', () => {
       done();
     });
 
-    new AssetSubscriber({ ablyOptions, resolution }).start(channel);
+    new Subscriber({ ablyOptions, resolution }).start(channel);
   });
 
   it('sends new requested resoltion in presence data when sendChangeRequest is called', (done) => {
@@ -49,14 +49,14 @@ describe('resolution', () => {
       done();
     });
 
-    const subscriber = new AssetSubscriber({ ablyOptions });
+    const subscriber = new Subscriber({ ablyOptions });
     subscriber.start(channel).then(() => {
       subscriber.sendChangeRequest(resolution);
     });
   });
 
   it('rejects promise when sendChangeRequest is called without an asset', () => {
-    const subscriber = new AssetSubscriber({ ablyOptions });
+    const subscriber = new Subscriber({ ablyOptions });
 
     expect(() => subscriber.sendChangeRequest({ accuracy: 107, desiredInterval: 108, minimumDisplacement: 109 })).to
       .throw;

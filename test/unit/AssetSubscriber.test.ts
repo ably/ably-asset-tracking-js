@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import AssetConnection from '../../src/lib/AssetConnection';
-import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import Subscriber from '../../src/lib/Subscriber';
 import Logger from '../../src/lib/utils/Logger';
 import { mocked } from 'ts-jest/utils';
 
@@ -16,7 +16,7 @@ jest.mock('../../src/lib/AssetConnection');
 jest.mock('../../src/lib/utils/Logger');
 const mockAssetConnection = mocked(AssetConnection, true);
 
-describe('AssetSubscriber', () => {
+describe('Subscriber', () => {
   beforeEach(() => {
     mockAssetConnection.mockReturnValue(({
       close: mockClose,
@@ -30,7 +30,7 @@ describe('AssetSubscriber', () => {
   });
 
   it('should construct a new Logger on creation', () => {
-    new AssetSubscriber(basicOptions);
+    new Subscriber(basicOptions);
 
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith(undefined);
@@ -41,7 +41,7 @@ describe('AssetSubscriber', () => {
       level: 5,
     };
 
-    new AssetSubscriber({ ...basicOptions, loggerOptions });
+    new Subscriber({ ...basicOptions, loggerOptions });
 
     expect(Logger).toHaveBeenCalledTimes(1);
     expect(Logger).toHaveBeenCalledWith(loggerOptions);
@@ -60,7 +60,7 @@ describe('AssetSubscriber', () => {
       minimumDisplacement: 4,
     };
     const trackingId = 'trackingId';
-    const subscriber = new AssetSubscriber({
+    const subscriber = new Subscriber({
       ablyOptions,
       onStatusUpdate,
       onLocationUpdate,
@@ -82,14 +82,14 @@ describe('AssetSubscriber', () => {
   });
 
   it('should call AssetConnection.joinChannelPresence() when start is called', async () => {
-    const subscriber = new AssetSubscriber(basicOptions);
+    const subscriber = new Subscriber(basicOptions);
 
     await subscriber.start('trackingId');
     expect(mockJoinChannelPresence).toHaveBeenCalledTimes(1);
   });
 
   it('should call AssetConnection.close() when .stop() is called', async () => {
-    const subscriber = new AssetSubscriber(basicOptions);
+    const subscriber = new Subscriber(basicOptions);
 
     await subscriber.start('trackingId');
     await subscriber.stop();
@@ -97,7 +97,7 @@ describe('AssetSubscriber', () => {
   });
 
   it('should no longer have an AssetConnection once .stop() has been called', async () => {
-    const subscriber = new AssetSubscriber(basicOptions);
+    const subscriber = new Subscriber(basicOptions);
 
     await subscriber.start('trackingId');
 
@@ -109,7 +109,7 @@ describe('AssetSubscriber', () => {
   });
 
   it('should call AssetConnection.performChangeResolution() when .sendChangeRequest() is called', async () => {
-    const subscriber = new AssetSubscriber(basicOptions);
+    const subscriber = new Subscriber(basicOptions);
     const resolution = {
       accuracy: 5,
       desiredInterval: 4,
@@ -124,7 +124,7 @@ describe('AssetSubscriber', () => {
   });
 
   it('should reject promise when .sendChangeRequest() is called without asset being tracked', async () => {
-    const subscriber = new AssetSubscriber(basicOptions);
+    const subscriber = new Subscriber(basicOptions);
     const resolution = {
       accuracy: 5,
       desiredInterval: 4,

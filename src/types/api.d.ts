@@ -4,7 +4,7 @@ import * as types from '.';
  * Represents a subscriber. Subscribers maintain the Ably connection, relaying location updates for a tracked item back
  * to the local application as they are received from the remote publisher.
  */
-export class AssetSubscriber {
+export class Subscriber {
   constructor(options: types.SubscriberOptions);
 
   /**

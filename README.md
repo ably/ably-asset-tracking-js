@@ -25,7 +25,7 @@ This repository contains the Asset Subscribing SDK for Web.
 Here is an example of how the SDK can be used:
 
 ```ts
-import { AssetSubscriber, Accuracy } from 'ably-asset-tracking';
+import { Subscriber, Accuracy } from 'ably-asset-tracking';
 
 const ablyOptions = {
   key: ABLY_API_KEY,
@@ -50,7 +50,7 @@ const resolution = {
 };
 
 // Initialise the subscriber.
-const subscriber = new AssetSubscriber({
+const subscriber = new Subscriber({
   ablyOptions,
   onLocationUpdate,
   onStatusUpdate,
