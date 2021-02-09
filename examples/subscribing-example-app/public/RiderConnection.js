@@ -1,7 +1,7 @@
 import { Vehicle } from './Vehicle.js';
 import { Coordinate } from './Coordinate.js';
 
-const { Accuracy, AssetSubscriber } = AblyAssetTracking;
+const { Accuracy, Subscriber } = AblyAssetTracking;
 
 const lowResolution = {
   accuracy: Accuracy.Low,
@@ -22,7 +22,7 @@ export class RiderConnection {
     this.createMapSpecificMarker = createMapSpecificMarker;
     this.createMapSpecificZoomListener = createMapSpecificZoomListener;
     this.hiRes = initialZoomLevel > 14;
-    this.assetSubscriber = new AssetSubscriber({
+    this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onLocationUpdate: (message) => {
         this.processMessage(message);
@@ -35,21 +35,21 @@ export class RiderConnection {
     createMapSpecificZoomListener((zoom) => {
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
-        this.assetSubscriber.sendChangeRequest(highResolution);
+        this.subscriber.sendChangeRequest(highResolution);
       } else if (zoom <= zoomThreshold && this.hiRes) {
         this.hiRes = false;
-        this.assetSubscriber.sendChangeRequest(lowResolution);
+        this.subscriber.sendChangeRequest(lowResolution);
       }
     });
     this.shouldSnap = false;
   }
 
   async connect(channelId) {
-    if (this.assetSubscriber.assetConnection) {
-      await this.assetSubscriber.stop();
+    if (this.subscriber.assetConnection) {
+      await this.subscriber.stop();
     }
 
-    this.assetSubscriber.start(channelId || 'ivan');
+    this.subscriber.start(channelId || 'ivan');
   }
 
   processMessage(message) {
