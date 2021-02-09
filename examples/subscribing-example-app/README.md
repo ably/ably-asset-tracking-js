@@ -157,7 +157,7 @@ export class RiderConnection {
     this.createMapSpecificMarker = createMapSpecificMarker;
     this.createMapSpecificZoomListener = createMapSpecificZoomListener;
     this.hiRes = initialZoomLevel > 14;
-    this.assetSubscriber = new AblyAssetTracking.AssetSubscriber({
+    this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onEnhancedLocationUpdate: (message) => {
         this.processMessage(message);
@@ -170,10 +170,10 @@ export class RiderConnection {
     createMapSpecificZoomListener((zoom) => {
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
-        this.assetSubscriber.sendChangeRequest(highResolution);
+        this.subscriber.sendChangeRequest(highResolution);
       } else if (zoom <= zoomThreshold && this.hiRes) {
         this.hiRes = false;
-        this.assetSubscriber.sendChangeRequest(lowResolution);
+        this.subscriber.sendChangeRequest(lowResolution);
       }
     });
     this.shouldSnap = false;
@@ -185,7 +185,7 @@ This constructor takes a three parameters:
  - the `createMapSpecificZoomListener` function - which is defined as `createZoomListener` in the `script.js` file.
  - the initial zoom level of the map.
 
-Callbacks are provided to the Ably AssetSubscriber constructor to define behaviour for when the drivers status and location are updated.
+Callbacks are provided to the Ably Subscriber constructor to define behaviour for when the drivers status and location are updated.
 
 In order to connect to Ably, a `connect` function is defined inside the `script.js` file:
 
@@ -193,13 +193,13 @@ In order to connect to Ably, a `connect` function is defined inside the `script.
   async connect(channelId) {
     // First, make sure that if we're already connected to a driver we disconnect from it
 
-    if (this.assetSubscriber.assetConnection) {
-      await this.assetSubscriber.stop();
+    if (this.subscriber.assetConnection) {
+      await this.subscriber.stop();
     }
 
     // Now, use the Asset Tracking SDK to connect to the channelId provided in the call to connect
     // This defaults to 'ivan', one of our test channel names.
-    this.assetSubscriber.start(channelId || 'ivan');
+    this.subscriber.start(channelId || 'ivan');
   }
 ```
 
