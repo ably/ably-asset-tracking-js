@@ -1,8 +1,8 @@
 # Change log
 
-## [1.0.0-beta](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta)
+## [1.0.0-beta.1](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.1)
 
-[Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-preview.2...v1.0.0-beta)
+[Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-preview.2...v1.0.0-beta.1)
 
 **Closed issues:**
 
