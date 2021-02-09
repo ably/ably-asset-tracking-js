@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import AssetConnection from '../../src/lib/AssetConnection';
-import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import AssetSubscriber from '../../src/lib/Subscriber';
 import Logger from '../../src/lib/utils/Logger';
 import { mocked } from 'ts-jest/utils';
 

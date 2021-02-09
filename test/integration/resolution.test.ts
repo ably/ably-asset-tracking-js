@@ -1,6 +1,6 @@
 import { Types } from 'ably';
 import { expect } from 'chai';
-import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import AssetSubscriber from '../../src/lib/Subscriber';
 import { getRandomChannelName, MockPublisher } from './support/testUtils';
 
 describe('resolution', () => {

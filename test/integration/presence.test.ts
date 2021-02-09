@@ -1,4 +1,4 @@
-import AssetSubscriber from '../../src/lib/AssetSubscriber';
+import AssetSubscriber from '../../src/lib/Subscriber';
 import { getRandomChannelName, MockPublisher } from './support/testUtils';
 
 describe('presence', () => {
