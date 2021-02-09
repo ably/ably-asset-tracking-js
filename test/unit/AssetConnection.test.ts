@@ -129,6 +129,21 @@ describe('AssetConnection', () => {
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
   });
 
+  it('should call onStatusUpdate with false when publisher is absent', () => {
+    const onStatusUpdate = jest.fn();
+    const presenceMessage = {
+      data: {
+        type: ClientTypes.Publisher,
+      },
+      action: 'absent',
+    };
+    mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, onStatusUpdate).joinChannelPresence();
+
+    expect(onStatusUpdate).toHaveBeenCalledTimes(1);
+    expect(onStatusUpdate).toHaveBeenCalledWith(false);
+  });
+
   it('should call onStatusUpdate with false when publisher leaves channel presence', () => {
     const onStatusUpdate = jest.fn();
     const presenceMessage = {

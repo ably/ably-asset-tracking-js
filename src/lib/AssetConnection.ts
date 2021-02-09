@@ -94,7 +94,7 @@ class AssetConnection {
     if (data?.type === ClientTypes.Publisher) {
       if (['enter', 'present'].includes(presenceMessage.action)) {
         this.notifyAssetIsOnline();
-      } else if (presenceMessage.action === 'leave') {
+      } else if (['leave', 'absent'].includes(presenceMessage.action)) {
         this.notifyAssetIsOffline();
       }
     }
