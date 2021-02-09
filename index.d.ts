@@ -1,5 +1,5 @@
-import { AssetSubscriber } from './src/types/api';
+import { Subscriber } from './src/types/api';
 import { Accuracy } from './src/lib/constants';
 export * from './src/types';
 
-export { AssetSubscriber, Accuracy };
+export { Subscriber, Accuracy };

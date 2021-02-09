@@ -1,15 +1,15 @@
-import AssetSubscriber from '../../src/lib/Subscriber';
+import Subscriber from '../../src/lib/Subscriber';
 import { getRandomChannelName, MockPublisher } from './support/testUtils';
 
 describe('presence', () => {
-  let subscriber: AssetSubscriber;
+  let subscriber: Subscriber;
   let publisher: MockPublisher;
 
   before(async function () {
     this.timeout(5000);
     const key = AblyTestApp.keys[0].keyStr;
 
-    subscriber = new AssetSubscriber({
+    subscriber = new Subscriber({
       ablyOptions: {
         key,
         environment: 'sandbox',

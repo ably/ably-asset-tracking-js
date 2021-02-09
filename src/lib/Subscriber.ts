@@ -3,7 +3,7 @@ import { LocationListener, Resolution, StatusListener, SubscriberOptions } from 
 import AssetConnection from './AssetConnection';
 import Logger from './utils/Logger';
 
-class AssetSubscriber {
+class Subscriber {
   ablyOptions: AblyTypes.ClientOptions;
   onStatusUpdate?: StatusListener;
   onLocationUpdate?: LocationListener;
@@ -46,4 +46,4 @@ class AssetSubscriber {
   };
 }
 
-export default AssetSubscriber;
+export default Subscriber;

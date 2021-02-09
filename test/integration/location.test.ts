@@ -1,6 +1,6 @@
 import { Types } from 'ably';
 import { expect } from 'chai';
-import AssetSubscriber from '../../src/lib/Subscriber';
+import Subscriber from '../../src/lib/Subscriber';
 import { MockPublisher, getRandomChannelName } from './support/testUtils';
 
 describe('location', () => {
@@ -20,7 +20,7 @@ describe('location', () => {
   });
 
   it('can start/stop tracking an asset without error', async () => {
-    const subscriber = new AssetSubscriber({ ablyOptions });
+    const subscriber = new Subscriber({ ablyOptions });
     subscriber.start(getRandomChannelName()).then(() => {
       subscriber.stop();
     });
@@ -35,7 +35,7 @@ describe('location', () => {
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
 
     subscriber.start(channel).then(() => {
       publisher.sendEnhancedMessage(channel, location);
@@ -51,7 +51,7 @@ describe('location', () => {
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
 
     publisher.sendEnhancedMessage(channel, location).then(() => {
       subscriber.start(channel);
@@ -67,7 +67,7 @@ describe('location', () => {
       subscriber.stop().then(done);
     };
 
-    const subscriber = new AssetSubscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
 
     subscriber.start(channel).then(() => {
       publisher.sendEnhancedMessage(channel, [location]);
