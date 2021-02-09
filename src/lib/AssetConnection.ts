@@ -93,9 +93,9 @@ class AssetConnection {
   private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
     const data = typeof presenceMessage.data === 'string' ? JSON.parse(presenceMessage.data) : presenceMessage.data;
     if (data?.type === ClientTypes.Publisher) {
-      if (presenceMessage.action === 'enter') {
+      if (['enter', 'present'].includes(presenceMessage.action)) {
         this.notifyAssetIsOnline();
-      } else if (presenceMessage.action === 'leave') {
+      } else if (['leave', 'absent'].includes(presenceMessage.action)) {
         this.notifyAssetIsOffline();
       }
     }
