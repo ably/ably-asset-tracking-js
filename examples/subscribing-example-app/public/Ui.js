@@ -12,7 +12,16 @@ export function bindUi(riderConnectionInstance) {
     }
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
+        console.log(!cbEvent.target.checked);
+        cbEvent.target.parentElement.setAttribute("data-checked", !cbEvent.target.checked);
         riderConnectionInstance.shouldSnap = !cbEvent.target.checked;
+    });
+
+    channelIdTextBox.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        updateChannelButton.click();
+        }
     });
 
     updateChannelButton.addEventListener("click", () => {

@@ -1,13 +1,19 @@
 
+:root {
+  --orange: #ff5416;
+}
+
 html {
   box-sizing: border-box;
+  background-color: black;
 }
 *, *:before, *:after {
   box-sizing: inherit;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Questrial', arial, Helvetica, sans-serif;
+  margin: 0;
 }
 
 #map {
@@ -25,11 +31,29 @@ header, .controls {
 
 header {
   flex-wrap: wrap;
-  padding-bottom: 10px;
+  padding: 10px;
 }
 
 h1 {
-  display: none;
+  display: flex;
+  margin: 0;
+  font-weight: normal;
+  color: var(--orange);
+}
+
+.title {
+  font-size: 28px;
+  line-height: 30px;
+  display: inline-block;
+}
+
+.logo {
+  display: inline-block;
+  width: 100px;
+  height: 30px;
+  margin-right: 5px;
+  color: transparent;
+  background: url(logo.svg) no-repeat left;
 }
 
 .intro {
@@ -37,17 +61,13 @@ h1 {
 }
 
 h2 {
+  font-weight: normal;
   font-size: 1em;
+  color: white;
 }
 
 #channel {
   display: flex;
-}
-
-.controls {
-  padding: 0 10px 0 20px;
-  border-radius: 10px;
-  background-color: #eee;
 }
 
 .label {
@@ -55,41 +75,38 @@ h2 {
 }
 
 .input {
-  height: 52px;
+  height: 40px;
   max-width: 200px;
-  font-size: 1.2em;
-  padding: 0px 15px;
-  border-radius: 10px;
+  font-size: 1em;
+  padding: 0px 10px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border: 0;
-  background-color: #eee;
   box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02)
 }
 
 .button {
-  height: 52px;
+  display: none;
+  height: 40px;
   padding: 0 20px;
   border: 0;
-  border-radius: 10px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  font-size: 1.2em;
+  border-radius: 20px;
+  font-size: 1em;
   color: white;
-  background-color: #F9A01B;
-}
-
-.button:hover {
-  background-color: #ED760A;
+  background: var(--orange);
 }
 
 .historyContainer .item {
-    height: 300px;
-    border: 1px solid black;
-    overflow: hidden;
-    margin-top: 10px;
-    padding: 20px;
-  }  
+  height: 300px;
+  border: 1px solid black;
+  overflow: hidden;
+  margin-top: 10px;
+  padding: 20px;
+}  
+
+.animation {
+  display: none;
+}
   
 .switch {
   position: relative;
@@ -97,8 +114,9 @@ h2 {
   align-items: center;
   justify-content: space-between;
   width: max-content;
-  height: 54px;
-  border-radius: 10px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: white;
 }
 
 .switch-text {
@@ -106,6 +124,9 @@ h2 {
   margin: 0 10px;
   font-weight: bold;
   font-family: Arial, Helvetica, sans-serif;
+  z-index: 1;
+  transition: all .4s ease-in-out;
+  color: black;
 }
 
 .switch input {
@@ -115,45 +136,36 @@ h2 {
   height: 0;
 }
 
-.slider {
-  position: relative;
+.switch::before {
+  content: "";
+  position: absolute;
+  left: 1px;
   width: 60px;
-  height: 34px;
+  height: 38px;
   border-radius: 34px;
   transition: .4s;
-  background-color: #F9A01B;
+  background: var(--orange);
   cursor: pointer;
-  transition: .4s;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02);
+  transition: all .4s ease-in-out;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  border-radius: 50%;
-  background-color: white;
-  transition: all .4s;
+.off {
+  color: white;
 }
 
-input:checked + .slider {
-  background-color: #ED760A;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02);
+[data-checked="true"]::before {
+  left: calc(100% - 81px);
+  right: 1px;
+  width: 80px;
 }
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #ED760A;
+[data-checked="true"] .off {
+  color: black;
 }
 
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
+[data-checked="true"] .on {
+  color: white;
 }
-
 
 main {
   max-width: 900px;
@@ -224,14 +236,13 @@ p {
   }
   .subscribers {
     position: absolute;
+    width: 100%;
+    height: 60px;
     bottom: 0;
-    left: 50%;
+    left: 0;
     margin: 0;
     padding: 10px;
-    background-color: white;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    transform: translateX(-50%);
+    background-color: black;
     z-index: 1;
   }
   h2 {
@@ -240,35 +251,15 @@ p {
   header {
     flex-wrap: nowrap;
     gap: 20px;
-
-  }
-  .input,
-  .button, 
-  .controls {
-    font-size: 1em;
-    height: 50px;
-    padding: 10px;
   }
   #channel {
     max-width: 50%;
   }
-  .switch-text {
-    display: none;
-  }
   .controls {
-    display: flex;
-    flex-direction: column;
-    background-color: transparent;
-    justify-content: flex-end;
-    align-items: flex-end;
-    padding: 0 0 0 10px;
-  }
-  .slider {
-    height: 34px; 
-  }
-  .slider:before {
-    height: 26px;
-    width: 26px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1;
   }
   h2 {
     font-weight: normal;
