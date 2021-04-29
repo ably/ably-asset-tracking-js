@@ -78,6 +78,7 @@ h2 {
   height: 40px;
   max-width: 200px;
   font-size: 1em;
+  margin-right: 20px;
   padding: 0px 10px;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
@@ -229,6 +230,10 @@ p {
   background-image: url("./driverNW.png");
 }
 
+.mapboxgl-map {
+  background-color: white;
+}
+
 /* mobile styles */
 @media (max-width: 800px) {
   #map {
@@ -245,6 +250,12 @@ p {
     background-color: black;
     z-index: 1;
   }
+  .title {
+    font-size: 17px;
+    line-height: 15px;
+    display: inline-block;
+    text-align: center;
+  }
   h2 {
     margin: 0;
   }
@@ -258,11 +269,23 @@ p {
   .controls {
     position: absolute;
     bottom: 10px;
-    right: 10px;
+    right: 50%;
     z-index: 1;
+    transform: translate(50%, 0%);
   }
   h2 {
     font-weight: normal;
     font-size: 0.8em;
+  }
+  .input {
+    max-width: 170px;
+    margin: 0;
+  }
+  a.mapboxgl-ctrl-logo {
+    margin: 0px 0 5px -5px!important;
+  }
+  .mapboxgl-ctrl-bottom-right>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+    bottom: 5px!important;
+    right: -4px!important;
   }
 }
