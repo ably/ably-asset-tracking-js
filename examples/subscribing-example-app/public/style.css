@@ -57,7 +57,10 @@ h1 {
 }
 
 .intro {
-  display: block;
+  height: calc(100vh - 100px);
+  padding: 40px;
+  font-size: 1.2em;
+  background-color: white;
 }
 
 h2 {
@@ -168,21 +171,19 @@ h2 {
   color: white;
 }
 
-main {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
 p {
+  max-width: 960px;
   line-height: 1.6em;
 }
 
 .link {
   display: block;
-  margin: 10px 0;
+  max-width: 960px;
+  margin: 2em 0;
   text-decoration: none;
+  font-size: 1.2em;
   font-weight: bold;
+  cursor: pointer;
   color: #F9A01B;
 }
 
