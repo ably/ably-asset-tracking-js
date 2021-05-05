@@ -59,7 +59,8 @@ describe('resolution', () => {
   it('rejects promise when sendChangeRequest is called without an asset', () => {
     const subscriber = new Subscriber({ ablyOptions });
 
-    expect(() => subscriber.sendChangeRequest({ accuracy: Accuracy.Maximum, desiredInterval: 108, minimumDisplacement: 109 })).to
-      .throw;
+    expect(() =>
+      subscriber.sendChangeRequest({ accuracy: Accuracy.Maximum, desiredInterval: 108, minimumDisplacement: 109 })
+    ).to.throw;
   });
 });

@@ -21,27 +21,27 @@ export class MockPublisher {
     this.ably.channels.get(channel).presence.subscribe('enter', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb(message);
     });
-  }
+  };
 
   onSubscriberPresenceUpdate = (channel: string, cb: (data: Types.PresenceMessage) => void): void => {
     this.ably.channels.get(channel).presence.subscribe('update', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb(message);
     });
-  }
+  };
 
   onSubscriberPresenceLeave = (channel: string, cb: () => void): void => {
     this.ably.channels.get(channel).presence.subscribe('leave', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb();
     });
-  }
+  };
 
   enterPresence = async (channel: string): Promise<void> => {
     await this.ably.channels.get(channel).presence.enter({ type: ClientTypes.Publisher });
-  }
+  };
 
   leavePresence = async (channel: string): Promise<void> => {
     await this.ably.channels.get(channel).presence.leave();
-  }
+  };
 }
 
 export const getRandomChannelName = (): string => Math.random().toString();
