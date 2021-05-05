@@ -2,6 +2,7 @@ import { Types } from 'ably';
 import { expect } from 'chai';
 import Subscriber from '../../src/lib/Subscriber';
 import { getRandomChannelName, MockPublisher } from './support/testUtils';
+import { Accuracy } from '../../src/lib/constants';
 
 describe('resolution', () => {
   let ablyOptions: Types.ClientOptions;
@@ -23,7 +24,7 @@ describe('resolution', () => {
   it('sends requested resolution in presence data on start', (done) => {
     const channel = getRandomChannelName();
     const resolution = {
-      accuracy: 1,
+      accuracy: Accuracy.Minimum,
       desiredInterval: 100,
       minimumDisplacement: 101,
     };
@@ -39,7 +40,7 @@ describe('resolution', () => {
   it('sends new requested resoltion in presence data when sendChangeRequest is called', (done) => {
     const channel = getRandomChannelName();
     const resolution = {
-      accuracy: 1,
+      accuracy: Accuracy.Balanced,
       desiredInterval: 100,
       minimumDisplacement: 101,
     };
@@ -58,7 +59,7 @@ describe('resolution', () => {
   it('rejects promise when sendChangeRequest is called without an asset', () => {
     const subscriber = new Subscriber({ ablyOptions });
 
-    expect(() => subscriber.sendChangeRequest({ accuracy: 107, desiredInterval: 108, minimumDisplacement: 109 })).to
+    expect(() => subscriber.sendChangeRequest({ accuracy: Accuracy.Maximum, desiredInterval: 108, minimumDisplacement: 109 })).to
       .throw;
   });
 });
