@@ -1,7 +1,7 @@
 import { Types } from 'ably';
 import AssetConnection, { EventNames } from '../../src/lib/AssetConnection';
 import Logger from '../../src/lib/utils/Logger';
-import { ClientTypes } from '../../src/lib/constants';
+import { ClientTypes, Accuracy } from '../../src/lib/constants';
 import { setImmediate } from '../../src/lib/utils/utils';
 import { mocked } from 'ts-jest/utils';
 
@@ -82,7 +82,7 @@ describe('AssetConnection', () => {
 
   it('should enter channel presence with correct params when .joinChannelPresence() is called', () => {
     const resolution = {
-      accuracy: 2,
+      accuracy: Accuracy.Low,
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
@@ -201,7 +201,7 @@ describe('AssetConnection', () => {
 
   it('should update channel presence data when .performChangeResolution is called', () => {
     const resolution = {
-      accuracy: 2,
+      accuracy: Accuracy.Low,
       desiredInterval: 3,
       minimumDisplacement: 4,
     };

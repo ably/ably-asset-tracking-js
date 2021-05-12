@@ -3,6 +3,7 @@ import AssetConnection from '../../src/lib/AssetConnection';
 import Subscriber from '../../src/lib/Subscriber';
 import Logger from '../../src/lib/utils/Logger';
 import { mocked } from 'ts-jest/utils';
+import { Accuracy } from '../../src/lib/constants';
 
 // This is the simplest constructor options object that Typescript will allow to compile
 const basicOptions = {
@@ -55,7 +56,7 @@ describe('Subscriber', () => {
       level: 5,
     };
     const resolution = {
-      accuracy: 2,
+      accuracy: Accuracy.Maximum,
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
@@ -111,7 +112,7 @@ describe('Subscriber', () => {
   it('should call AssetConnection.performChangeResolution() when .sendChangeRequest() is called', async () => {
     const subscriber = new Subscriber(basicOptions);
     const resolution = {
-      accuracy: 5,
+      accuracy: Accuracy.Balanced,
       desiredInterval: 4,
       minimumDisplacement: 3,
     };
@@ -126,7 +127,7 @@ describe('Subscriber', () => {
   it('should reject promise when .sendChangeRequest() is called without asset being tracked', async () => {
     const subscriber = new Subscriber(basicOptions);
     const resolution = {
-      accuracy: 5,
+      accuracy: Accuracy.High,
       desiredInterval: 4,
       minimumDisplacement: 3,
     };

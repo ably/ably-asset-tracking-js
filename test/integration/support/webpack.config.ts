@@ -15,7 +15,7 @@ const config: webpack.Configuration = {
     rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
   },
   resolve: {
-    extensions: [ '.ts', '.js' ],
+    extensions: ['.ts', '.js'],
   },
   devServer: {
     host: hostname,
