@@ -9,4 +9,4 @@ declare var AblyTestApp: {
     keySecret: string;
     keyStr: string;
   }>;
-}
+};

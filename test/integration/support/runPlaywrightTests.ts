@@ -8,7 +8,7 @@ const port = 3001;
 const host = 'localhost';
 
 declare var onTestLog: (evt: { type: string; detail: string }) => void;
-declare var onTestResult: (evt: { type: string; detail: { pass: boolean, passes: number, total: number} }) => void;
+declare var onTestResult: (evt: { type: string; detail: { pass: boolean; passes: number; total: number } }) => void;
 
 const server = new WebpackDevServer(webpack(config), { ...config.devServer, open: false });
 
@@ -26,12 +26,12 @@ const runTests = async (browserType: BrowserType<ChromiumBrowser | WebKitBrowser
   await page.goto(`http://${host}:${port}`);
 
   console.log(`\nrunning tests in ${browserType.name()}`);
-  
-  await new Promise<void>(resolve => {
+
+  await new Promise<void>((resolve) => {
     page.exposeFunction('onTestLog', (({ detail }) => {
       console.log(detail);
     }) as typeof onTestLog);
-  
+
     page.exposeFunction('onTestResult', (({ detail }) => {
       console.log(`${browserType.name()} tests complete: ${detail.passes}/${detail.total} passed`);
       if (detail.pass) {
@@ -42,8 +42,7 @@ const runTests = async (browserType: BrowserType<ChromiumBrowser | WebKitBrowser
         process.exit(1);
       }
     }) as typeof onTestResult);
-  
-  
+
     page.evaluate(() => {
       window.addEventListener('testLog', (({ type, detail }: CustomEvent) => {
         onTestLog({ type, detail });
@@ -52,5 +51,5 @@ const runTests = async (browserType: BrowserType<ChromiumBrowser | WebKitBrowser
         onTestResult({ type, detail });
       }) as EventListener);
     });
-  })
-}
+  });
+};
