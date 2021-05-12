@@ -2,12 +2,10 @@ export function bindUi(riderConnectionInstance) {
 
     var queryParams = new URLSearchParams(window.location.search);
 
-    const updateChannelButton = document.getElementById("updateChannelButton");
     const channelIdTextBox = document.getElementById("channelID");
     const animationCheckbox = document.getElementById("animation");
-    const subscriberCount = document.getElementById("subscriberCount");
     
-    if (!updateChannelButton || !channelIdTextBox) {
+    if (!channelIdTextBox) {
         throw new Error("Where has the UI gone? Cannot continue. Can't find ChannelID");
     }
 
@@ -18,18 +16,14 @@ export function bindUi(riderConnectionInstance) {
     });
 
     channelIdTextBox.addEventListener("keyup", (e) => {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        updateChannelButton.click();
+        if (e.key === "Enter") {
+            e.preventDefault();
+            const channelValue = channelIdTextBox.value;
+            if (channelValue.length > 0) {
+                riderConnectionInstance.connect(channelIdTextBox.value);
+            }
         }
     });
-
-    updateChannelButton.addEventListener("click", () => {
-        const channelValue = channelIdTextBox.value;
-        if (channelValue.length > 0) {
-            riderConnectionInstance.connect(channelIdTextBox.value);
-        }
-    }); 
 
     if (queryParams.has("channel")) {
         const channelId = queryParams.get("channel");
