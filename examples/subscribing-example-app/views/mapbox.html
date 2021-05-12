@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Ably Asset Tracking - Mapbox</title>
-    
-    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
-    <script src="main.js"></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
-    <script src='https://unpkg.com/@turf/turf@5.1.6/turf.min.js'></script>
-    <script src="/MapBox/script.js" type="module"></script>
+<head>
+  <meta charset="utf-8">
+  <title>Ably Asset Tracking - Mapbox</title>
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css" type="text/css" />    
-    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
+  <script src="main.js"></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+  <script src='https://unpkg.com/@turf/turf@5.1.6/turf.min.js'></script>
+  <script src="/MapBox/script.js" type="module"></script>
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" type="text/css" />
+  <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </script>
 </head>
 <body>
   <header>
-    <h1><a href="http://ably.com/" class="logo">Ably</a> <span class="title">Asset Tracking</span></h1>
+    <h1>
+      <a href="http://ably.com/" class="logo">Ably</a>
+      <span class="title">Asset Tracking</span>
+    </h1>
     <div id="channel">
       <label for="channelID" class="label">Tracking ID:</label>
       <input type="text" name="channelID" id="channelID" placeholder="Enter a Channel ID" class="input">
-      <input type="button" value="Update" class="button" id="updateChannelButton"> 
       <h2 class="subscribers" id="subscriberCount"></h2>
     </div>
     <div class="controls">
@@ -35,6 +37,6 @@
       </label>
     </div>
   </header>
-    <div id="map"></div>
-  </body>
+  <div id="map"></div>
+</body>
 </html>
