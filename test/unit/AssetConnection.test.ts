@@ -67,7 +67,7 @@ describe('AssetConnection', () => {
     new AssetConnection(new Logger(), trackingId, ablyOptions);
 
     expect(mockChannelsGet).toHaveBeenCalledTimes(1);
-    expect(mockChannelsGet).toHaveBeenCalledWith(trackingId, {
+    expect(mockChannelsGet).toHaveBeenCalledWith(`tracking:${trackingId}`, {
       params: {
         rewind: '1',
       },

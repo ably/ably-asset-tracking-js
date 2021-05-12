@@ -9,38 +9,38 @@ export class MockPublisher {
     this.ably = new Ably.Realtime.Promise({ key, clientId: 'mock-publisher', environment: 'sandbox' });
   }
 
-  sendRawMessage = async (channel: string, message: unknown): Promise<void> => {
-    await this.ably.channels.get(channel).publish(EventNames.Raw, message);
+  sendRawMessage = async (trackingId: string, message: unknown): Promise<void> => {
+    await this.ably.channels.get(`tracking:${trackingId}`).publish(EventNames.Raw, message);
   };
 
-  sendEnhancedMessage = async (channel: string, message: unknown): Promise<void> => {
-    await this.ably.channels.get(channel).publish(EventNames.Enhanced, message);
+  sendEnhancedMessage = async (trackingId: string, message: unknown): Promise<void> => {
+    await this.ably.channels.get(`tracking:${trackingId}`).publish(EventNames.Enhanced, message);
   };
 
-  onSubscriberPresenceEnter = (channel: string, cb: (data: Types.PresenceMessage) => void): void => {
-    this.ably.channels.get(channel).presence.subscribe('enter', (message) => {
+  onSubscriberPresenceEnter = (trackingId: string, cb: (data: Types.PresenceMessage) => void): void => {
+    this.ably.channels.get(`tracking:${trackingId}`).presence.subscribe('enter', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb(message);
     });
   };
 
-  onSubscriberPresenceUpdate = (channel: string, cb: (data: Types.PresenceMessage) => void): void => {
-    this.ably.channels.get(channel).presence.subscribe('update', (message) => {
+  onSubscriberPresenceUpdate = (trackingId: string, cb: (data: Types.PresenceMessage) => void): void => {
+    this.ably.channels.get(`tracking:${trackingId}`).presence.subscribe('update', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb(message);
     });
   };
 
-  onSubscriberPresenceLeave = (channel: string, cb: () => void): void => {
-    this.ably.channels.get(channel).presence.subscribe('leave', (message) => {
+  onSubscriberPresenceLeave = (trackingId: string, cb: () => void): void => {
+    this.ably.channels.get(`tracking:${trackingId}`).presence.subscribe('leave', (message) => {
       if (message.data.type === ClientTypes.Subscriber) cb();
     });
   };
 
-  enterPresence = async (channel: string): Promise<void> => {
-    await this.ably.channels.get(channel).presence.enter({ type: ClientTypes.Publisher });
+  enterPresence = async (trackingId: string): Promise<void> => {
+    await this.ably.channels.get(`tracking:${trackingId}`).presence.enter({ type: ClientTypes.Publisher });
   };
 
-  leavePresence = async (channel: string): Promise<void> => {
-    await this.ably.channels.get(channel).presence.leave();
+  leavePresence = async (trackingId: string): Promise<void> => {
+    await this.ably.channels.get(`tracking:${trackingId}`).presence.leave();
   };
 }
 
