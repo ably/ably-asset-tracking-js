@@ -45,8 +45,8 @@ export enum Accuracy {
 }
 
 export enum ClientTypes {
-  Subscriber = 'subscriber',
-  Publisher = 'publisher',
+  Subscriber = 'SUBSCRIBER',
+  Publisher = 'PUBLISHER',
 }
 
 export enum LocationUpdateType {
