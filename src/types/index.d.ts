@@ -45,10 +45,6 @@ export type LocationUpdate = {
   intermediateLocations: Array<Location>;
   skippedLocations: Array<Location>;
   type: LocationUpdateType;
-  /**
-   * Current battery level of publisher device in the range of 0 to 100 or null if data not available.
-   */
-  batteryLevel: number | null;
 };
 
 export type LocationListener = (locationUpdate: LocationUpdate) => unknown;
