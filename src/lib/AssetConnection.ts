@@ -33,7 +33,7 @@ class AssetConnection {
     this.resolution = resolution ?? null;
 
     this.ably = new Ably.Realtime.Promise(ablyOptions);
-    this.channel = this.ably.channels.get(trackingId, {
+    this.channel = this.ably.channels.get(`tracking:${trackingId}`, {
       params: { rewind: '1' },
     });
 
