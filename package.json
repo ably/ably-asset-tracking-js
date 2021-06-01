@@ -6,7 +6,8 @@
   "typings": "index.d.ts",
   "files": [
       "src/**",
-      "dist/**"
+      "dist/**",
+      "index.d.ts"
   ],
   "scripts": {
     "build": "webpack",
