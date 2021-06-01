@@ -4,6 +4,10 @@
   "description": "JavaScript client SDKs for the Ably Asset Tracking service.",
   "main": "dist/main.js",
   "typings": "index.d.ts",
+  "files": [
+      "src/**",
+      "dist/**"
+  ],
   "scripts": {
     "build": "webpack",
     "test": "jest ./test/unit",
