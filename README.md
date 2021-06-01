@@ -34,7 +34,7 @@ Visit the [Ably Asset Tracking](https://ably.com/documentation/asset-tracking) d
 Here is an example of how the SDK can be used:
 
 ```ts
-import { Subscriber, Accuracy } from 'ably-asset-tracking';
+import { Subscriber, Accuracy } from '@ably/asset-tracking';
 
 const ablyOptions = {
   key: ABLY_API_KEY,

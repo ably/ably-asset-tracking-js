@@ -1,9 +1,14 @@
 {
-  "name": "ably-asset-tracking-js",
+  "name": "@ably/asset-tracking",
   "version": "1.0.0-beta.1",
   "description": "JavaScript client SDKs for the Ably Asset Tracking service.",
   "main": "dist/main.js",
   "typings": "index.d.ts",
+  "files": [
+      "src/**",
+      "dist/**",
+      "index.d.ts"
+  ],
   "scripts": {
     "build": "webpack",
     "test": "jest ./test/unit",
