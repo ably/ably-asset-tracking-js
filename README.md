@@ -31,7 +31,7 @@ Visit the [Ably Asset Tracking](https://ably.com/documentation/asset-tracking) d
 
 ## Installation
 
-To use ably asset tracking in your app, install it as a dependency:
+To use Ably Asset Tracking in your app, install it as a dependency:
 ```bash
 # If you are using NPM:
 npm install @ably/asset-tracking
