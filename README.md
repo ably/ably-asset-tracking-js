@@ -29,6 +29,17 @@ Visit the [Ably Asset Tracking](https://ably.com/documentation/asset-tracking) d
 - [Introducing Ably Asset Tracking - public beta now available](https://ably.com/blog/ably-asset-tracking-beta)
 - [Accurate Delivery Tracking with Navigation SDK + Ably Realtime Network](https://www.mapbox.com/blog/accurate-delivery-tracking)
 
+## Installation
+
+To use ably asset tracking in your app, install it as a dependency:
+```bash
+# If you are using NPM:
+npm install @ably/asset-tracking
+
+# If you are using Yarn:
+yarn add @ably/asset-tracking
+```
+
 ## Usage
 
 Here is an example of how the SDK can be used:
