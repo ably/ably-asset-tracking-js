@@ -64,7 +64,17 @@ export class RiderConnection {
       marker.focus();
     }
 
-    this.rider.move(locationCoordinate, this.shouldSnap);
+    if (message.skippedLocations.length) {
+      const allLocations = [...message.skippedLocations, message.location];
+      const interval = 500 / allLocations.length;
+      allLocations.forEach((location, index) => {
+        setTimeout(() => {
+          this.rider.move(Coordinate.fromLocation(location), this.shouldSnap);
+        }, interval * (index + 1));
+      });
+    } else {
+      this.rider.move(locationCoordinate, this.shouldSnap);
+    }
   }
 
   onStatusUpdate(callbackFunction) {
