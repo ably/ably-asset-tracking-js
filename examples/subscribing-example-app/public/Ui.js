@@ -4,10 +4,45 @@ export function bindUi(riderConnectionInstance) {
 
     const channelIdTextBox = document.getElementById("channelID");
     const animationCheckbox = document.getElementById("animation");
-    
-    if (!channelIdTextBox) {
-        throw new Error("Where has the UI gone? Cannot continue. Can't find ChannelID");
+    const settingsIcon = document.getElementById("settings-icon");
+    const settingsOverlay = document.getElementById("overlay");
+    const settingsContainer = document.getElementById("settings-container");
+    const skippedLocationRadioButtons = document.querySelectorAll("input[name=render-skipped]");
+    const skippedLocationSettings = document.getElementById("skipped-location-settings");
+    const skippedLocationIntervalInput = document.getElementById("skipped-location-interval-input");
+
+    function openSettingsOverlay() {
+      settingsOverlay.style.display = "flex";
     }
+
+    function closeSettingsOverlay() {
+      settingsOverlay.style.display= "none";
+    }
+
+    if (!channelIdTextBox) {
+      throw new Error("Where has the UI gone? Cannot continue. Can't find ChannelID");
+    }
+
+    settingsContainer.addEventListener("click", evt => evt.stopPropagation());
+    settingsOverlay.addEventListener("click", closeSettingsOverlay);
+    settingsIcon.addEventListener("click", openSettingsOverlay);
+
+    skippedLocationRadioButtons.forEach(radioButton => {
+        radioButton.addEventListener('click', evt => {
+            if (evt.target.value === 'on') {
+              riderConnectionInstance.setRenderSkippedLocations(true);
+              skippedLocationSettings.style.display = "block";
+            } else if (evt.target.value === 'off') {
+              riderConnectionInstance.setRenderSkippedLocations(false);
+              skippedLocationSettings.style.display = "none";
+            }
+        });
+    });
+
+    skippedLocationIntervalInput.addEventListener("change", (evt) => {
+        const interval = Number(evt.target.value);
+        if (!isNaN(interval)) riderConnectionInstance.setSkippedLocationInterval(interval);
+    });
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
         cbEvent.target.parentElement.setAttribute("data-checked", !cbEvent.target.checked);
