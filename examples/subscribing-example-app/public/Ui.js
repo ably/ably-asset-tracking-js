@@ -7,7 +7,7 @@ export function bindUi(riderConnectionInstance) {
     const settingsIcon = document.getElementById("settings-icon");
     const settingsOverlay = document.getElementById("overlay");
     const settingsContainer = document.getElementById("settings-container");
-    const skippedLocationRadioButtons = document.querySelectorAll("input[name=render-skipped]");
+    const skippedLocationCheckbox = document.getElementById('render-skipped');
     const skippedLocationSettings = document.getElementById("skipped-location-settings");
     const skippedLocationIntervalInput = document.getElementById("skipped-location-interval-input");
 
@@ -27,16 +27,9 @@ export function bindUi(riderConnectionInstance) {
     settingsOverlay.addEventListener("click", closeSettingsOverlay);
     settingsIcon.addEventListener("click", openSettingsOverlay);
 
-    skippedLocationRadioButtons.forEach(radioButton => {
-        radioButton.addEventListener('click', evt => {
-            if (evt.target.value === 'on') {
-              riderConnectionInstance.setRenderSkippedLocations(true);
-              skippedLocationSettings.style.display = "block";
-            } else if (evt.target.value === 'off') {
-              riderConnectionInstance.setRenderSkippedLocations(false);
-              skippedLocationSettings.style.display = "none";
-            }
-        });
+    skippedLocationCheckbox.addEventListener('change', (cbEvent) => {
+      riderConnectionInstance.setRenderSkippedLocations(cbEvent.target.checked);
+      skippedLocationSettings.classList.toggle("hidden");
     });
 
     skippedLocationIntervalInput.addEventListener("change", (evt) => {
@@ -45,7 +38,6 @@ export function bindUi(riderConnectionInstance) {
     });
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
-        cbEvent.target.parentElement.setAttribute("data-checked", !cbEvent.target.checked);
         riderConnectionInstance.shouldSnap = !cbEvent.target.checked;
     });
 

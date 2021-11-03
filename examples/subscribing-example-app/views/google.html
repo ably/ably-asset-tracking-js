@@ -32,24 +32,29 @@
     </header>
     <div id="map"></div>
     <div id="overlay">
-      <div id="settings-container">
-        <h1 id="settings-title">Settings</h1>
-        <br />
-        <span class="settings-label">Animation:</span>
-        <label class="switch">
-          <input type="checkbox" id="animation" checked="true">
-          <span class="switch-text off">Snap</span>
-          <span class="switch-text on">Smooth</span>
-        </label>
-        <span class="settings-label">Render skipped locations:</span>
-        <input type="radio" name="render-skipped" value="on">
-        <label>On</label>
-        <input type="radio" name="render-skipped" value="off" checked>
-        <label>Off</label>
-        <div id="skipped-location-settings">
-          <span class="settings-label">Skipped location interval:</span>
-          <input type="number" id="skipped-location-interval-input" value="500">
-          <img src="/info_white_18dp.svg" title="The interval in milliseconds over which to render skipped locations. For example, if set to 500 then skipped locations will be rendered sequentially over the course of 500 milliseconds from when the location update is recieved." />
+      <div class="settings-container" id="settings-container">
+        <h1 class="settings-title">Settings</h1>
+        
+          <div class="setting">
+            Smooth animations
+            <label class="switch" for="animation">
+              <input type="checkbox" class="settings-checkbox" id="animation" checked />
+              <div class="slider"></div>
+            </label>
+          </div>
+
+          <div class="setting">
+           Render Skipped locations
+            <label class="switch" for="render-skipped">
+              <input type="checkbox" class="settings-checkbox" id="render-skipped"/>
+              <div class="slider"></div>
+            </label>
+          </div>
+
+        <div id="skipped-location-settings" class="hidden setting">
+          <span class="settings-label">Skipped location interval</span>
+          <img class="settings-info" src="/info_white_18dp.svg" title="The interval in milliseconds over which to render skipped locations. For example, if set to 500 then skipped locations will be rendered sequentially over the course of 500 milliseconds from when the location update is recieved." />
+          <input type="number" id="skipped-location-interval-input" class="settings-number" value="500">
         </div>
       </div>
     </div>

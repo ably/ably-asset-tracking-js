@@ -100,66 +100,6 @@ h2 {
 .animation {
   display: none;
 }
-  
-.switch {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: max-content;
-  height: 40px;
-  border-radius: 20px;
-  background-color: white;
-  margin: 1rem 0 1rem 0;
-}
-
-.switch-text {
-  display: block;
-  margin: 0 10px;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-  z-index: 1;
-  transition: all .4s ease-in-out;
-  color: black;
-}
-
-.switch input {
-  opacity: 0;
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-.switch::before {
-  content: "";
-  position: absolute;
-  left: 1px;
-  width: 60px;
-  height: 38px;
-  border-radius: 34px;
-  transition: .4s;
-  background: var(--orange);
-  cursor: pointer;
-  transition: all .4s ease-in-out;
-}
-
-.off {
-  color: white;
-}
-
-[data-checked="true"]::before {
-  left: calc(100% - 81px);
-  right: 1px;
-  width: 80px;
-}
-
-[data-checked="true"] .off {
-  color: black;
-}
-
-[data-checked="true"] .on {
-  color: white;
-}
 
 p {
   max-width: 960px;
@@ -245,9 +185,9 @@ p {
   justify-content: center;
 }
 
-#settings-container {
-  width: 50%;
-  height: 50%;
+.settings-container {
+  min-width: 50%;
+  height: max-content;
   background-color: black;
   border-radius: 1rem;
   padding: 1rem;
@@ -255,17 +195,81 @@ p {
   color: white;
 }
 
-#settings-title {
+.settings-title {
   color: white;
 }
 
 .settings-label {
   color: white;
-  margin: 1rem;
 }
 
-#skipped-location-settings {
-  display: none;
+.hidden {
+  visibility: hidden;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.switch input {
+  display:none;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 34px;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: .4s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: .4s;
+}
+
+.settings-checkbox:checked + .slider {
+  background-color: #ED760A;
+}
+
+.settings-checkbox:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.settings-number {
+  height: 40px;
+  max-width: 100px;
+  font-size: 1em;
+  padding: 0px 10px;
+  border-radius: 2px;
+  border: 0;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 20%), inset 0 -1px 0px rgb(0 0 0 / 2%);
+}
+
+.settings-info {
+  margin-top: -.5rem;
+  margin-right: auto;
 }
 
 /* mobile styles */

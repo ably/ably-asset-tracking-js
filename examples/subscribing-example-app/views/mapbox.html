@@ -36,18 +36,25 @@
     <div id="overlay">
       <div id="settings-container">
         <h1 id="settings-title">Settings</h1>
-        <br />
-        <span class="settings-label">Animation:</span>
-        <label class="switch">
+
+          <label class="switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+          </label>
+
+
+      <!--  <label class="switch">
+          <span class="settings-label">Smooth animation:</span>
           <input type="checkbox" id="animation" checked="true">
-          <span class="switch-text off">Snap</span>
-          <span class="switch-text on">Smooth</span>
+          <span class="switch-text off">Off</span>
+          <span class="switch-text on">On</span>
         </label>
-        <span class="settings-label">Render skipped locations:</span>
-        <input type="radio" name="render-skipped" value="on">
-        <label>On</label>
-        <input type="radio" name="render-skipped" value="off" checked>
-        <label>Off</label>
+        <label class="switch">
+          <span class="settings-label">Render skipped locations:</span>
+          <input type="checkbox" id="render-skipped" checked="false">
+          <span class="switch-text off">Off</span>
+          <span class="switch-text on">On</span>
+        </label>-->
         <div id="skipped-location-settings">
           <span class="settings-label">Skipped location interval:</span>
           <input type="number" id="skipped-location-interval-input" value="500">
