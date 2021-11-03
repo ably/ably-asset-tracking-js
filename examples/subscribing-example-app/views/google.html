@@ -34,23 +34,20 @@
     <div id="overlay">
       <div class="settings-container" id="settings-container">
         <h1 class="settings-title">Settings</h1>
-        
-          <div class="setting">
-            Smooth animations
-            <label class="switch" for="animation">
-              <input type="checkbox" class="settings-checkbox" id="animation" checked />
-              <div class="slider"></div>
-            </label>
-          </div>
-
-          <div class="setting">
-           Render Skipped locations
-            <label class="switch" for="render-skipped">
-              <input type="checkbox" class="settings-checkbox" id="render-skipped"/>
-              <div class="slider"></div>
-            </label>
-          </div>
-
+        <div class="setting">
+          Smooth animations
+          <label class="switch" for="animation">
+            <input type="checkbox" class="settings-checkbox" id="animation" checked />
+            <div class="slider"></div>
+          </label>
+        </div>
+        <div class="setting">
+          Render Skipped locations
+          <label class="switch" for="render-skipped">
+            <input type="checkbox" class="settings-checkbox" id="render-skipped"/>
+            <div class="slider"></div>
+          </label>
+        </div>
         <div id="skipped-location-settings" class="hidden setting">
           <span class="settings-label">Skipped location interval</span>
           <img class="settings-info" src="/info_white_18dp.svg" title="The interval in milliseconds over which to render skipped locations. For example, if set to 500 then skipped locations will be rendered sequentially over the course of 500 milliseconds from when the location update is recieved." />
