@@ -75,7 +75,7 @@ export class RiderConnection {
       marker.focus();
     }
 
-    if (this.timeouts.length) {
+    if (this.timeouts.length > 0) {
       this.timeouts.forEach(clearTimeout);
       this.timeouts = [];
     }
