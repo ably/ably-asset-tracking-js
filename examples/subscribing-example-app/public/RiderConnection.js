@@ -60,7 +60,6 @@ export class RiderConnection {
   }
 
   setSkippedLocationInterval(interval) {
-    console.log(`setting skipped location interval to ${interval}`);
     this.skippedLocationInterval = interval;
   }
 
