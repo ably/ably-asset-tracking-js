@@ -30,7 +30,11 @@ export class Coordinate {
   }
 
   static fromMessage(messageData) {
-    return Coordinate.fromGeoJson(messageData.location.geometry.coordinates, messageData.location.properties.bearing);
+    return Coordinate.fromLocation(messageData.location);
+  }
+
+  static fromLocation(location) {
+    return Coordinate.fromGeoJson(location.geometry.coordinates, location.properties.bearing);
   }
 
   static bearingToCompass(bearing) {

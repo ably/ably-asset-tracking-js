@@ -1,4 +1,3 @@
-
 :root {
   --orange: #ff5416;
 }
@@ -7,7 +6,9 @@ html {
   box-sizing: border-box;
   background-color: black;
 }
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -17,13 +18,14 @@ body {
 }
 
 #map {
-  height: calc(100vh - 86px);  
+  height: calc(100vh - 86px);
   width: 100%;
   margin: 0;
   padding: 0;
 }
 
-header, .controls {
+header,
+.controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -86,7 +88,7 @@ h2 {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   border: 0;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), inset 0 -1px 0px rgba(0,0,0,0.02)
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 -1px 0px rgba(0, 0, 0, 0.02);
 }
 
 .historyContainer .item {
@@ -95,69 +97,10 @@ h2 {
   overflow: hidden;
   margin-top: 10px;
   padding: 20px;
-}  
+}
 
 .animation {
   display: none;
-}
-  
-.switch {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: max-content;
-  height: 40px;
-  border-radius: 20px;
-  background-color: white;
-}
-
-.switch-text {
-  display: block;
-  margin: 0 10px;
-  font-weight: bold;
-  font-family: Arial, Helvetica, sans-serif;
-  z-index: 1;
-  transition: all .4s ease-in-out;
-  color: black;
-}
-
-.switch input {
-  opacity: 0;
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-
-.switch::before {
-  content: "";
-  position: absolute;
-  left: 1px;
-  width: 60px;
-  height: 38px;
-  border-radius: 34px;
-  transition: .4s;
-  background: var(--orange);
-  cursor: pointer;
-  transition: all .4s ease-in-out;
-}
-
-.off {
-  color: white;
-}
-
-[data-checked="true"]::before {
-  left: calc(100% - 81px);
-  right: 1px;
-  width: 80px;
-}
-
-[data-checked="true"] .off {
-  color: black;
-}
-
-[data-checked="true"] .on {
-  color: white;
 }
 
 p {
@@ -173,11 +116,11 @@ p {
   font-size: 1.2em;
   font-weight: bold;
   cursor: pointer;
-  color: #F9A01B;
+  color: #f9a01b;
 }
 
 .link:hover {
-  color: #ED760A;
+  color: #ed760a;
 }
 
 .marker-mapbox {
@@ -185,43 +128,151 @@ p {
   height: 26px;
   background: no-repeat center;
   background-size: 100%;
-  background-image: url("./driverN.png");
+  background-image: url('./driverN.png');
 }
 
-.marker-mapbox[compass-direction="N"] {
-  background-image: url("./driverN.png");
+.marker-mapbox[compass-direction='N'] {
+  background-image: url('./driverN.png');
 }
 
-.marker-mapbox[compass-direction="S"] {
-  background-image: url("./driverS.png");
+.marker-mapbox[compass-direction='S'] {
+  background-image: url('./driverS.png');
 }
 
-.marker-mapbox[compass-direction="E"] {
-  background-image: url("./driverE.png");
+.marker-mapbox[compass-direction='E'] {
+  background-image: url('./driverE.png');
 }
 
-.marker-mapbox[compass-direction="W"] {
-  background-image: url("./driverW.png");
+.marker-mapbox[compass-direction='W'] {
+  background-image: url('./driverW.png');
 }
 
-.marker-mapbox[compass-direction="NE"] {
-  background-image: url("./driverNE.png");
+.marker-mapbox[compass-direction='NE'] {
+  background-image: url('./driverNE.png');
 }
 
-.marker-mapbox[compass-direction="SE"] {
-  background-image: url("./driverSE.png");
+.marker-mapbox[compass-direction='SE'] {
+  background-image: url('./driverSE.png');
 }
 
-.marker-mapbox[compass-direction="SW"] {
-  background-image: url("./driverSW.png");
+.marker-mapbox[compass-direction='SW'] {
+  background-image: url('./driverSW.png');
 }
 
-.marker-mapbox[compass-direction="NW"] {
-  background-image: url("./driverNW.png");
+.marker-mapbox[compass-direction='NW'] {
+  background-image: url('./driverNW.png');
 }
 
 .mapboxgl-map {
   background-color: white;
+}
+
+#settings-icon {
+  cursor: pointer;
+}
+
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  cursor: pointer; /* Add a pointer on hover */
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-container {
+  width: clamp(300px, 50%, 450px);
+  height: max-content;
+  background-color: black;
+  border-radius: 1rem;
+  padding: 1rem;
+  cursor: default;
+  color: white;
+}
+
+.settings-title {
+  color: white;
+}
+
+.settings-label {
+  color: white;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.switch {
+  display: inline-block;
+  height: 34px;
+  position: relative;
+  width: 60px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 34px;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: 0.4s;
+}
+
+.slider:before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: 0.4s;
+}
+
+.settings-checkbox:checked + .slider {
+  background-color: #ed760a;
+}
+
+.settings-checkbox:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.settings-number {
+  height: 40px;
+  max-width: 100px;
+  margin-left: 1rem;
+  padding: 0px 10px;
+  border: 0;
+  border-radius: 2px;
+  font-size: 1em;
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 20%), inset 0 -1px 0px rgb(0 0 0 / 2%);
+}
+
+.settings-info {
+  margin-top: -0.5rem;
+  margin-right: auto;
 }
 
 /* mobile styles */
@@ -241,6 +292,7 @@ p {
     z-index: 1;
   }
   .title {
+    width: min-content;
     font-size: 17px;
     line-height: 15px;
     display: inline-block;
@@ -272,10 +324,10 @@ p {
     margin: 0;
   }
   a.mapboxgl-ctrl-logo {
-    margin: 0px 0 5px -5px!important;
+    margin: 0px 0 5px -5px !important;
   }
-  .mapboxgl-ctrl-bottom-right>.mapboxgl-ctrl-attrib.mapboxgl-compact:after {
-    bottom: 5px!important;
-    right: -4px!important;
+  .mapboxgl-ctrl-bottom-right > .mapboxgl-ctrl-attrib.mapboxgl-compact:after {
+    bottom: 5px !important;
+    right: -4px !important;
   }
 }

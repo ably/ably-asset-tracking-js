@@ -22,6 +22,9 @@ export class RiderConnection {
     this.createMapSpecificMarker = createMapSpecificMarker;
     this.createMapSpecificZoomListener = createMapSpecificZoomListener;
     this.hiRes = initialZoomLevel > 14;
+    this.renderSkippedLocations = false;
+    this.skippedLocationInterval = 500;
+    this.timeouts = [];
     this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onLocationUpdate: (message) => {
@@ -52,6 +55,14 @@ export class RiderConnection {
     this.subscriber.start(channelId || 'ivan');
   }
 
+  setRenderSkippedLocations(state) {
+    this.renderSkippedLocations = state;
+  }
+
+  setSkippedLocationInterval(interval) {
+    this.skippedLocationInterval = interval;
+  }
+
   processMessage(message) {
     const locationCoordinate = Coordinate.fromMessage(message);
 
@@ -64,7 +75,22 @@ export class RiderConnection {
       marker.focus();
     }
 
-    this.rider.move(locationCoordinate, this.shouldSnap);
+    if (this.timeouts.length > 0) {
+      this.timeouts.forEach(clearTimeout);
+      this.timeouts = [];
+    }
+
+    if (this.renderSkippedLocations && message.skippedLocations.length) {
+      const allLocations = [...message.skippedLocations, message.location];
+      const interval = this.skippedLocationInterval / (allLocations.length - 1);
+      allLocations.forEach((location, index) => {
+        this.timeouts.push(setTimeout(() => {
+          this.rider.move(Coordinate.fromLocation(location), this.shouldSnap);
+        }, interval * index));
+      });
+    } else {
+      this.rider.move(locationCoordinate, this.shouldSnap);
+    }
   }
 
   onStatusUpdate(callbackFunction) {
