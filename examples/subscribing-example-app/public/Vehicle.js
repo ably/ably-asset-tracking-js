@@ -35,7 +35,7 @@ export class Vehicle {
         var path = turf.lineString([ currentCoordinate.toGeoJson(), destinationCoordinate.toGeoJson() ]);
         var pathLength = turf.length(path, { units: 'miles' });
 
-        var numSteps = 30; // This is the FPS
+        var numSteps = 60; // This is the FPS
 
         for (let step = 0; step <= numSteps; step++) {
             const curDistance = step / numSteps * pathLength;
