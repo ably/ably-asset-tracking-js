@@ -4,15 +4,15 @@ import { Coordinate } from './Coordinate.js';
 const { Accuracy, Subscriber } = AblyAssetTracking;
 
 const lowResolution = {
-  accuracy: Accuracy.Low,
-  desiredInterval: 5000, // Desired time between updates, in milliseconds.
+  accuracy: Accuracy.Balanced,
+  desiredInterval: 2000, // Desired time between updates, in milliseconds.
   minimumDisplacement: 15, // Desired minimum positional granularity required, in meters.
 };
 
 const highResolution = {
-  accuracy: Accuracy.High,
-  desiredInterval: 1000,
-  minimumDisplacement: 5,
+  accuracy: Accuracy.Maximum,
+  desiredInterval: 500,
+  minimumDisplacement: 2,
 };
 
 const zoomThreshold = 14;
