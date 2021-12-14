@@ -41,7 +41,7 @@ We've split up the files required into the following locations:
 **/web/views/** - HTML files  
 **/web/public/** - client side assets  
 **/web/public/Google** - Google maps implementation  
-**/web/public/MapBox** - MapBox maps implementation
+**/web/public/Mapbox** - Mapbox maps implementation
 
 Each HTML file references its own [JavaScript module](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) that executes when the page loads. This example uses ES Modules to reference the other scripts using `import` statements, without having to use a bundler, or Webpack, or any other build tools.
 
@@ -86,7 +86,7 @@ For example, here is the Google `script.js`:
 })();
 ```
 
-and the very similar MapBox `script.js`:
+and the very similar Mapbox `script.js`:
 
 ```js
 
@@ -114,7 +114,7 @@ and the very similar MapBox `script.js`:
 
 The only places that these two code samples differ, are the `createMarker` factory functions (which create either a `GoogleMapsMarker` or a `MapBoxMarker`), the implementation of `createZoomListener`, and where we call either `google.maps.Map` or `mapboxgl.Map` to construct the map.
 
-The logic that deals with creating and managing map markers differs between each platform, it is provider specific, so there are two completely distinct implementations in [public/Google/GoogleMapsMarker.js](public/Google/GoogleMapsMarker.js) and [public/MapBox/MapBoxMarker.js](public/Google/GoogleMapsMarker.js).
+The logic that deals with creating and managing map markers differs between each platform, it is provider specific, so there are two completely distinct implementations in [public/Google/GoogleMapsMarker.js](public/Google/GoogleMapsMarker.js) and [public/Mapbox/MapBoxMarker.js](public/Google/GoogleMapsMarker.js).
 
 These map markers act as [`adapters`](https://en.wikipedia.org/wiki/Adapter_pattern) - the rest of the code can interacts with the map markers in a map-platform-agnostic manner.
 
@@ -299,7 +299,7 @@ updatePosition(targetCoordinate) {
 }
 ```
 
-using the `MapBox SDK` `setLngLat()` function to move the marker.
+using the `Mapbox SDK` `setLngLat()` function to move the marker.
 
 This animation loop runs over and over, processing any movements that are in the internal `this.moveBuffer` array. If the array is empty, it does nothing.
 
@@ -318,7 +318,7 @@ async move(destinationCoordinate, snapToLocation = false) {
     }
 ```
 
-If the marker needs to animate, the `this.moveBuffer` is reset, and then the current starting location is retrieved from the `this.marker` instance. The Google/MapBox Marker classes will make sure that this marker is returned in a format that the animation logic expects - the start position is then stored in a variable called `currentCoordinate`.
+If the marker needs to animate, the `this.moveBuffer` is reset, and then the current starting location is retrieved from the `this.marker` instance. The Google/Mapbox Marker classes will make sure that this marker is returned in a format that the animation logic expects - the start position is then stored in a variable called `currentCoordinate`.
 
 ```js
     this.moveBuffer = [];
@@ -388,7 +388,7 @@ This is the recommended way to handle your Ably API key security in real-world a
 
 Inside `Coordinates.js` there is a surprisingly large amount of code which formats different JavaScript objects.
 
-This is because each of the libraries used in this sample - MapBox, GoogleMaps, and turf.js, along with the Ably messages - have a subtly different way of expressing "a latitude and longitude". Sometimes they use "lat", sometimes "latitude", or "long" and "lon", or even as a two value array of [lng,lat].
+This is because each of the libraries used in this sample - Mapbox, GoogleMaps, and turf.js, along with the Ably messages - have a subtly different way of expressing "a latitude and longitude". Sometimes they use "lat", sometimes "latitude", or "long" and "lon", or even as a two value array of [lng,lat].
 
 `Coordinate.js` deals with the differences in these formats, converting between them without peppering the code with code copying and renaming properties.
 
