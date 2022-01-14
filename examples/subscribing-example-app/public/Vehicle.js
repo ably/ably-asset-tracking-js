@@ -20,7 +20,7 @@ export class Vehicle {
         return this.marker.getCurrentCoordinate();
     }
 
-    async move(destinationCoordinate, snapToLocation = false) {
+    async move(destinationCoordinate, accuracy, snapToLocation = false) {
         this.movementsSinceLastFocused++;
 
         if (snapToLocation) {
@@ -43,7 +43,7 @@ export class Vehicle {
 
             const targetCoordinate = Coordinate.fromGeoJson(targetLocation.geometry.coordinates, destinationCoordinate.bearing);
 
-            this.moveBuffer.push(targetCoordinate);
+            this.moveBuffer.push({ targetCoordinate, accuracy });
         }
     }
 
@@ -53,8 +53,8 @@ export class Vehicle {
             return; 
         }
 
-        const targetCoordinate = this.moveBuffer.shift();            
-        this.marker.updatePosition(targetCoordinate);
+        const { targetCoordinate, accuracy } = this.moveBuffer.shift();            
+        this.marker.updatePosition(targetCoordinate, accuracy);
 
         if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
             this.movementsSinceLastFocused = 0;
