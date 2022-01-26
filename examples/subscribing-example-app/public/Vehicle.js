@@ -31,7 +31,7 @@ export class Vehicle {
         this.moveBuffer = [];
 
         const currentCoordinate = this.marker.getCurrentCoordinate();
-        
+
         var path = turf.lineString([ currentCoordinate.toGeoJson(), destinationCoordinate.toGeoJson() ]);
         var pathLength = turf.length(path, { units: 'miles' });
 
@@ -53,14 +53,14 @@ export class Vehicle {
             return; 
         }
 
-        const { targetCoordinate, accuracy } = this.moveBuffer.shift();            
+        const { targetCoordinate, accuracy } = this.moveBuffer.shift();
         this.marker.updatePosition(targetCoordinate, accuracy);
 
         if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
             this.movementsSinceLastFocused = 0;
             this.marker.focus();
         }
-        
+
         window.requestAnimationFrame(() => { this.animate(); });
-    }  
+    }
 }

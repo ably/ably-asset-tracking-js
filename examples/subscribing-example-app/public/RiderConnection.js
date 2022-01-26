@@ -85,11 +85,11 @@ export class RiderConnection {
       const interval = this.skippedLocationInterval / (allLocations.length - 1);
       allLocations.forEach((location, index) => {
         this.timeouts.push(setTimeout(() => {
-          this.rider.move(Coordinate.fromLocation(location), location.accuracy, this.shouldSnap);
+          this.rider.move(Coordinate.fromLocation(location), location.accuracyHorizontal, this.shouldSnap);
         }, interval * index));
       });
     } else {
-      this.rider.move(locationCoordinate, message.location.accuracy, this.shouldSnap);
+      this.rider.move(locationCoordinate, message.location.accuracyHorizontal, this.shouldSnap);
     }
   }
 
