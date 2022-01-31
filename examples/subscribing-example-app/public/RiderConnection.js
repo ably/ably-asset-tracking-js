@@ -39,7 +39,9 @@ export class RiderConnection {
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
         this.subscriber.sendChangeRequest(highResolution);
+        this.rider?.createAccuracyCircle();
       } else if (zoom <= zoomThreshold && this.hiRes) {
+        this.rider?.hideAccuracyCircle();
         this.hiRes = false;
         this.subscriber.sendChangeRequest(lowResolution);
       }

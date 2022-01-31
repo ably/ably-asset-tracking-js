@@ -13,14 +13,26 @@ export class MapBoxMarker {
             .addTo(this.map);
     }
 
+    createAccuracyCircle() {
+        if (!this.accuracyCircle) {
+            this.accuracyCircle = new MapboxCircle(this.marker.getLngLat(), 1)
+                .addTo(this.map);
+        }
+    }
+
+    hideAccuracyCircle() {
+      this.accuracyCircle.remove();
+      this.accuracyCircle = null;
+    }
+
     getCurrentCoordinate() {
         return Coordinate.fromLngLat(this.marker.getLngLat());
     }
 
     updatePosition(targetCoordinate, accuracy) {
         this.marker.setLngLat(targetCoordinate);
-        this.accuracyCircle.setCenter(targetCoordinate);
-        this.accuracyCircle.setRadius(accuracy);
+        this.accuracyCircle?.setCenter(targetCoordinate);
+        this.accuracyCircle?.setRadius(accuracy);
         this.el.setAttribute('compass-direction', targetCoordinate.compassDirection);
     }
 

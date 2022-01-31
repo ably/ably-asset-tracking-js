@@ -20,6 +20,14 @@ export class Vehicle {
         return this.marker.getCurrentCoordinate();
     }
 
+    createAccuracyCircle() {
+      this.marker.createAccuracyCircle();
+    }
+
+    hideAccuracyCircle() {
+      this.marker.hideAccuracyCircle();
+    }
+
     async move(destinationCoordinate, accuracy, snapToLocation = false) {
         this.movementsSinceLastFocused++;
 
@@ -50,7 +58,7 @@ export class Vehicle {
     async animate() {
         if (this.moveBuffer.length === 0) {
             window.requestAnimationFrame(() => { this.animate(); });
-            return; 
+            return;
         }
 
         const { targetCoordinate, accuracy } = this.moveBuffer.shift();

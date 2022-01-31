@@ -16,8 +16,15 @@ export class GoogleMapsMarker {
           center: markerCoordinate,
           radius: 100,
         });
-
         this.map.setZoom(16);
+    }
+
+    createAccuracyCircle() {
+      this.accuracyCircle.setVisible(true);
+    }
+
+    hideAccuracyCircle() {
+      this.accuracyCircle.setVisible(false);
     }
 
     getCurrentCoordinate() {
@@ -37,7 +44,7 @@ export class GoogleMapsMarker {
             this.lastCompassDirection = compass;
         }
     }
-    
+
     focus() {
         this.map.panTo(this.current);
     }
