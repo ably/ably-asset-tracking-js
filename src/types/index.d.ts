@@ -15,6 +15,11 @@ export type SubscriberOptions = {
   onLocationUpdate?: LocationListener;
 
   /**
+   * A callback to be notified when a raw location update is available.
+   */
+  onRawLocationUpdate?: LocationListener;
+
+  /**
    * A callback to be notified when the online status of the asset changes.
    */
   onStatusUpdate?: StatusListener;
