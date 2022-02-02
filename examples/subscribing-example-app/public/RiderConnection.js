@@ -72,6 +72,10 @@ export class RiderConnection {
     this.skippedLocationInterval = interval;
   }
 
+  setDisplayRawLocations(value) {
+    this.rider.setDisplayRawLocations(value);
+  }
+
   processMessage(message, isRaw) {
     const locationCoordinate = Coordinate.fromMessage(message);
 

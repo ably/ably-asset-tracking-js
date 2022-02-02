@@ -5,7 +5,7 @@ export class MapBoxMarker {
         this.el = document.createElement('div');
         this.el.className = 'marker-mapbox';
         this.rawEl = document.createElement('div');
-        this.rawEl.className = 'raw-marker-mapbox';
+        this.rawEl.className = '';
 
         this.map = map;
         this.marker = new mapboxgl.Marker(this.el)
@@ -28,6 +28,14 @@ export class MapBoxMarker {
     hideAccuracyCircle() {
       this.accuracyCircle.remove();
       this.accuracyCircle = null;
+    }
+
+    showRawLocationMarker() {
+      this.rawEl.className = 'raw-marker-mapbox';
+    }
+
+    hideRawLocationMarker() {
+      this.rawEl.className = '';
     }
 
     getCurrentCoordinate() {

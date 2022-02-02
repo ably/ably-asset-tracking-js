@@ -6,7 +6,7 @@ export class GoogleMapsMarker {
         this.current = markerCoordinate;
         this.lastCompassDirection = "N";
         this.marker = new google.maps.Marker({ icon: "/driverN.png", map: map });
-	this.rawMarker = new google.maps.Marker({ icon: "/driverN.png", map: map, opacity: 0.3 });
+	this.rawMarker = new google.maps.Marker({ icon: "/driverN.png", map: map, opacity: 0.3, visible: false });
         this.accuracyCircle = new google.maps.Circle({
           strokeColor: "#FF0000",
           strokeOpacity: 0.8,
@@ -26,6 +26,14 @@ export class GoogleMapsMarker {
 
     hideAccuracyCircle() {
       this.accuracyCircle.setVisible(false);
+    }
+
+    showRawLocationMarker() {
+      this.rawMarker.setVisible(true);
+    }
+
+    hideRawLocationMarker() {
+      this.rawMarker.setVisible(false);
     }
 
     getCurrentCoordinate() {

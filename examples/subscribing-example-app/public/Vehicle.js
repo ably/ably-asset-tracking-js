@@ -28,6 +28,22 @@ export class Vehicle {
       this.marker.hideAccuracyCircle();
     }
 
+    showRawLocationMarker() {
+      this.marker.showRawLocationMarker();
+    }
+
+    hideRawLocationMarker() {
+      this.marker.hideRawLocationMarker();
+    }
+
+    setDisplayRawLocations(value) {
+      if (value) {
+        this.marker.showRawLocationMarker();
+      } else {
+        this.marker.hideRawLocationMarker();
+      }
+    }
+
     async move(destinationCoordinate, accuracy, isRaw, snapToLocation = false) {
         this.movementsSinceLastFocused++;
 

@@ -11,6 +11,7 @@ export function bindUi(riderConnectionInstance) {
     const skippedLocationSettings = document.getElementById("skipped-location-settings");
     const skippedLocationIntervalInput = document.getElementById("skipped-location-interval-input");
     const displayAccuracyCheckbox = document.getElementById("display-accuracy");
+    const displayRawLocationsCheckbox = document.getElementById("display-raw");
 
     function openSettingsOverlay() {
       settingsOverlay.style.display = "flex";
@@ -40,6 +41,10 @@ export function bindUi(riderConnectionInstance) {
 
     displayAccuracyCheckbox.addEventListener('change', (cbEvent) => {
       riderConnectionInstance.setDisplayAccuracyCircle(cbEvent.target.checked);
+    });
+
+    displayRawLocationsCheckbox.addEventListener('change', (cbEvent) => {
+      riderConnectionInstance.setDisplayRawLocations(cbEvent.target.checked);
     });
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
