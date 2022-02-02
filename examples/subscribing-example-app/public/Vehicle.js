@@ -28,7 +28,7 @@ export class Vehicle {
       this.marker.hideAccuracyCircle();
     }
 
-    async move(destinationCoordinate, accuracy, snapToLocation = false) {
+    async move(destinationCoordinate, accuracy, isRaw, snapToLocation = false) {
         this.movementsSinceLastFocused++;
 
         if (snapToLocation) {
@@ -51,7 +51,7 @@ export class Vehicle {
 
             const targetCoordinate = Coordinate.fromGeoJson(targetLocation.geometry.coordinates, destinationCoordinate.bearing);
 
-            this.moveBuffer.push({ targetCoordinate, accuracy });
+            this.moveBuffer.push({ targetCoordinate, accuracy, isRaw });
         }
     }
 
@@ -61,12 +61,17 @@ export class Vehicle {
             return;
         }
 
-        const { targetCoordinate, accuracy } = this.moveBuffer.shift();
-        this.marker.updatePosition(targetCoordinate, accuracy);
+        const { targetCoordinate, accuracy, isRaw } = this.moveBuffer.shift();
 
-        if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
-            this.movementsSinceLastFocused = 0;
-            this.marker.focus();
+        if (isRaw) {
+            this.marker.updateRawPosition(targetCoordinate, accuracy);
+        } else {
+            this.marker.updatePosition(targetCoordinate, accuracy);
+
+            if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
+                this.movementsSinceLastFocused = 0;
+                this.marker.focus();
+            }
         }
 
         window.requestAnimationFrame(() => { this.animate(); });

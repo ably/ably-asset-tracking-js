@@ -4,9 +4,14 @@ export class MapBoxMarker {
     constructor(map, markerCoordinate) {
         this.el = document.createElement('div');
         this.el.className = 'marker-mapbox';
+        this.rawEl = document.createElement('div');
+        this.rawEl.className = 'raw-marker-mapbox';
 
         this.map = map;
         this.marker = new mapboxgl.Marker(this.el)
+            .setLngLat(markerCoordinate)
+            .addTo(this.map);
+        this.rawMarker = new mapboxgl.Marker(this.rawEl)
             .setLngLat(markerCoordinate)
             .addTo(this.map);
         this.accuracyCircle = new MapboxCircle(markerCoordinate, 1)
@@ -34,6 +39,11 @@ export class MapBoxMarker {
         this.accuracyCircle?.setCenter(targetCoordinate);
         this.accuracyCircle?.setRadius(accuracy);
         this.el.setAttribute('compass-direction', targetCoordinate.compassDirection);
+    }
+
+    updateRawPosition(targetCoordinate) {
+        this.rawMarker.setLngLat(targetCoordinate);
+        this.rawEl.setAttribute('compass-direction', targetCoordinate.compassDirection);
     }
 
     focus() {
