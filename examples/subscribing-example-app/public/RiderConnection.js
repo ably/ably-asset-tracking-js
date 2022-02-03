@@ -33,6 +33,9 @@ export class RiderConnection {
       onLocationUpdate: (message) => {
         this.processMessage(message);
       },
+      onRawLocationUpdate: (message) => {
+        this.processMessage(message, true);
+      },
       onStatusUpdate: (status) => {
         this.statusUpdateCallback(status);
       },
@@ -43,7 +46,7 @@ export class RiderConnection {
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
         this.subscriber.sendChangeRequest(highResolution);
-        this.rider?.createAccuracyCircle();
+        this.rider?.showAccuracyCircle();
       } else if (zoom <= zoomThreshold && this.hiRes) {
         this.rider?.hideAccuracyCircle();
         this.hiRes = false;
@@ -69,7 +72,11 @@ export class RiderConnection {
     this.skippedLocationInterval = interval;
   }
 
-  processMessage(message) {
+  setDisplayRawLocations(value) {
+    this.rider.setDisplayRawLocations(value);
+  }
+
+  processMessage(message, isRaw) {
     const locationCoordinate = Coordinate.fromMessage(message);
 
     const riderId = locationCoordinate.id ?? 'default-id';
@@ -95,7 +102,7 @@ export class RiderConnection {
         }, interval * index));
       });
     } else {
-      this.rider.move(locationCoordinate, message.location.properties.accuracyHorizontal, this.shouldSnap);
+      this.rider.move(locationCoordinate, message.location.properties.accuracyHorizontal, isRaw, this.shouldSnap);
     }
   }
 
@@ -110,7 +117,7 @@ export class RiderConnection {
     } else if (!this.displayAccuracyCircle && displayAccuracyCircle) {
       this.displayAccuracyCircle = true;
       if (this.zoomLevel > zoomThreshold) {
-        this.rider?.createAccuracyCircle();
+        this.rider?.showAccuracyCircle();
       }
     }
   }

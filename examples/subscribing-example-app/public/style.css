@@ -131,6 +131,15 @@ p {
   background-image: url('./driverN.png');
 }
 
+.raw-marker-mapbox {
+  width: 30px;
+  height: 26px;
+  background: no-repeat center;
+  background-size: 100%;
+  background-image: url('./driverN.png');
+  opacity: 0.3;
+}
+
 .marker-mapbox[compass-direction='N'] {
   background-image: url('./driverN.png');
 }
@@ -165,6 +174,38 @@ p {
 
 .mapboxgl-map {
   background-color: white;
+}
+
+.raw-marker-mapbox[compass-direction='N'] {
+  background-image: url('./driverN.png');
+}
+
+.raw-marker-mapbox[compass-direction='S'] {
+  background-image: url('./driverS.png');
+}
+
+.raw-marker-mapbox[compass-direction='E'] {
+  background-image: url('./driverE.png');
+}
+
+.raw-marker-mapbox[compass-direction='W'] {
+  background-image: url('./driverW.png');
+}
+
+.raw-marker-mapbox[compass-direction='NE'] {
+  background-image: url('./driverNE.png');
+}
+
+.raw-marker-mapbox[compass-direction='SE'] {
+  background-image: url('./driverSE.png');
+}
+
+.raw-marker-mapbox[compass-direction='SW'] {
+  background-image: url('./driverSW.png');
+}
+
+.raw-marker-mapbox[compass-direction='NW'] {
+  background-image: url('./driverNW.png');
 }
 
 #settings-icon {
@@ -205,17 +246,16 @@ p {
   color: white;
 }
 
-.hidden {
-  visibility: hidden;
-  display: none !important;
-  margin-top: 0 !important;
-}
-
 .setting {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 1rem;
+}
+
+.hidden {
+  visibility: hidden;
+  display: none;
 }
 
 .switch {

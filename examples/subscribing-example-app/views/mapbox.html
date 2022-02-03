@@ -1,69 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Ably Asset Tracking - Mapbox</title>
+  <head>
+    <meta charset="utf-8">
+    <title>Ably Asset Tracking - Mapbox</title>
 
-  <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
-  <script src="main.js"></script>
-  <script src='https://npmcdn.com/mapbox-gl-circle/dist/mapbox-gl-circle.min.js'></script>
-  <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
-  <script src='https://unpkg.com/@turf/turf@5.1.6/turf.min.js'></script>
-  <script src="/Mapbox/script.js" type="module"></script>
+    <script src="https://cdn.ably.io/lib/ably.min-1.js"></script>
+    <script src="main.js"></script>
+    <script src='https://npmcdn.com/mapbox-gl-circle/dist/mapbox-gl-circle.min.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js'></script>
+    <script src='https://unpkg.com/@turf/turf@5.1.6/turf.min.js'></script>
+    <script src="/Mapbox/script.js" type="module"></script>
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" type="text/css" />
-  <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </script>
-</head>
-<body>
-  <header>
-    <h1>
-      <a href="http://ably.com/" class="logo">Ably</a>
-      <span class="title">Asset Tracking</span>
-    </h1>
-    <div id="channel">
-      <label for="channelID" class="label">Tracking ID:</label>
-      <input type="text" name="channelID" id="channelID" placeholder="Enter a Channel ID" class="input">
-      <h2 class="subscribers" id="subscriberCount"></h2>
-    </div>
-    <div class="controls">
-      <img src="/settings_white_36dp.svg" id="settings-icon" />
-    </div>
-  </header>
-  <div id="map"></div>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Questrial&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css' rel='stylesheet' />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  </head>
+  <body>
+    <header>
+      <h1>
+	<a href="http://ably.com/" class="logo">Ably</a>
+	<span class="title">Asset Tracking</span>
+      </h1>
+      <div id="channel">
+	<label for="channelID" class="label">Tracking ID:</label>
+	<input type="text" name="channelID" id="channelID" placeholder="Enter a Channel ID" class="input">
+	<h2 class="subscribers" id="subscriberCount"></h2>
+      </div>
+      <div class="controls">
+	<img src="/settings_white_36dp.svg" id="settings-icon" />
+      </div>
+    </header>
+    <div id="map"></div>
     <div id="overlay">
       <div class="settings-container" id="settings-container">
-        <h1 class="settings-title">Settings</h1>
-        <div class="setting">
-          Smooth animations
-          <label class="switch" for="animation">
-            <input type="checkbox" class="settings-checkbox" id="animation" checked />
-            <div class="slider"></div>
-          </label>
-        </div>
-        <div class="setting">
-          Render Skipped locations
-          <label class="switch" for="render-skipped">
-            <input type="checkbox" class="settings-checkbox" id="render-skipped"/>
-            <div class="slider"></div>
-          </label>
-        </div>
-        <div id="skipped-location-settings" class="hidden setting">
-          <span class="settings-label">Skipped location interval</span>
-          <img class="settings-info" src="/info_white_18dp.svg" title="The interval in milliseconds over which to render skipped locations. For example, if set to 500 then skipped locations will be rendered sequentially over the course of 500 milliseconds from when the location update is recieved." />
-          <input type="number" id="skipped-location-interval-input" class="settings-number" value="500">
-        </div>
-        <div class="setting">
+	<h1 class="settings-title">Settings</h1>
+	<div class="setting">
+	  Smooth animations
+	  <label class="switch" for="animation">
+	    <input type="checkbox" class="settings-checkbox" id="animation" checked />
+	    <div class="slider"></div>
+	  </label>
+	</div>
+	<div class="setting">
+	  Render Skipped locations
+	  <label class="switch" for="render-skipped">
+	    <input type="checkbox" class="settings-checkbox" id="render-skipped"/>
+	    <div class="slider"></div>
+	  </label>
+	</div>
+	<div id="skipped-location-settings" class="hidden setting">
+	  <span class="settings-label">Skipped location interval</span>
+	  <img class="settings-info" src="/info_white_18dp.svg" title="The interval in milliseconds over which to render skipped locations. For example, if set to 500 then skipped locations will be rendered sequentially over the course of 500 milliseconds from when the location update is recieved." />
+	  <input type="number" id="skipped-location-interval-input" class="settings-number" value="500">
+	</div>
+	<div class="setting">
 	  Display accuracy circle
-          <label class="switch" for="display-accuracy">
-            <input type="checkbox" checked class="settings-checkbox" id="display-accuracy"/>
-            <div class="slider"></div>
-          </label>
-        </div>
+	  <label class="switch" for="display-accuracy">
+	    <input type="checkbox" checked class="settings-checkbox" id="display-accuracy"/>
+	    <div class="slider"></div>
+	  </label>
+	</div>
+	<div class="setting">
+	  Display raw locations
+	  <label class="switch" for="display-raw">
+	    <input type="checkbox" class="settings-checkbox" id="display-raw"/>
+	    <div class="slider"></div>
+	  </label>
+	</div>
       </div>
     </div>
-</body>
+  </body>
 </html>

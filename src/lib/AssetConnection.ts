@@ -15,6 +15,7 @@ class AssetConnection {
   channel: AblyTypes.RealtimeChannelPromise;
   trackingId: string;
   onEnhancedLocationUpdate?: LocationListener;
+  onRawLocationUpdate?: LocationListener;
   onStatusUpdate?: StatusListener;
   resolution: Resolution | null;
 
@@ -23,12 +24,14 @@ class AssetConnection {
     trackingId: string,
     ablyOptions: AblyTypes.ClientOptions,
     onEnhancedLocationUpdate?: LocationListener,
+    onRawLocationUpdate?: LocationListener,
     onStatusUpdate?: StatusListener,
     resolution?: Resolution
   ) {
     this.logger = logger;
     this.trackingId = trackingId;
     this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
+    this.onRawLocationUpdate = onRawLocationUpdate;
     this.onStatusUpdate = onStatusUpdate;
     this.resolution = resolution ?? null;
 
@@ -39,6 +42,10 @@ class AssetConnection {
 
     if (this.onEnhancedLocationUpdate) {
       this.subscribeForEnhancedEvents(this.onEnhancedLocationUpdate);
+    }
+
+    if (this.onRawLocationUpdate) {
+      this.subscribeForRawEvents(this.onRawLocationUpdate);
     }
   }
 
@@ -66,6 +73,17 @@ class AssetConnection {
         this.logger.logError(`Error entering channel presence: ${reason}`);
         throw new Error(reason);
       });
+  };
+
+  private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
+    this.channel.subscribe(EventNames.Raw, (message) => {
+      const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
+      if (Array.isArray(parsedMessage)) {
+        parsedMessage.forEach((msg) => setImmediate(() => rawLocationListener(msg)));
+      } else {
+        setImmediate(() => rawLocationListener(parsedMessage));
+      }
+    });
   };
 
   private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {

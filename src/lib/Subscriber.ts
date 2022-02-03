@@ -7,6 +7,7 @@ class Subscriber {
   ablyOptions: AblyTypes.ClientOptions;
   onStatusUpdate?: StatusListener;
   onLocationUpdate?: LocationListener;
+  onRawLocationUpdate?: LocationListener;
   logger: Logger;
   assetConnection?: AssetConnection;
   resolution?: Resolution;
@@ -16,6 +17,7 @@ class Subscriber {
     this.ablyOptions = options.ablyOptions;
     this.onStatusUpdate = options.onStatusUpdate;
     this.onLocationUpdate = options.onLocationUpdate;
+    this.onRawLocationUpdate = options.onRawLocationUpdate;
     this.resolution = options.resolution;
   }
 
@@ -25,6 +27,7 @@ class Subscriber {
       trackingId,
       this.ablyOptions,
       this.onLocationUpdate,
+      this.onRawLocationUpdate,
       this.onStatusUpdate,
       this.resolution
     );

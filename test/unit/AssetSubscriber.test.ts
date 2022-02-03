@@ -50,8 +50,10 @@ describe('Subscriber', () => {
 
   it('should call the AssetConnection constructor with correct args when .start() is called', () => {
     const ablyOptions = {};
-    const onStatusUpdate = () => {};
-    const onLocationUpdate = () => {};
+    const onStatusUpdate = jest.fn();
+    const onLocationUpdate = jest.fn();
+    const onRawLocationUpdate = jest.fn();
+
     const loggerOptions = {
       level: 5,
     };
@@ -65,6 +67,7 @@ describe('Subscriber', () => {
       ablyOptions,
       onStatusUpdate,
       onLocationUpdate,
+      onRawLocationUpdate,
       loggerOptions,
       resolution,
     });
@@ -77,6 +80,7 @@ describe('Subscriber', () => {
       trackingId,
       ablyOptions,
       onLocationUpdate,
+      onRawLocationUpdate,
       onStatusUpdate,
       resolution
     );
