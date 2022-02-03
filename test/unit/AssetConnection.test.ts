@@ -107,6 +107,13 @@ describe('AssetConnection', () => {
     expect(mockChannelSubscribe).toHaveBeenCalledWith(EventNames.Enhanced, expect.any(Function));
   });
 
+  it('should subscribe to raw events when rawLocationListener is supplied', () => {
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, jest.fn());
+
+    expect(mockChannelSubscribe).toHaveBeenCalledTimes(1);
+    expect(mockChannelSubscribe).toHaveBeenCalledWith(EventNames.Raw, expect.any(Function));
+  });
+
   it('should call onStatusUpdate with true when publisher enters channel presence', () => {
     const onStatusUpdate = jest.fn();
     const presenceMessage = {
@@ -116,7 +123,14 @@ describe('AssetConnection', () => {
       action: 'enter',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
@@ -131,7 +145,14 @@ describe('AssetConnection', () => {
       action: 'present',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
@@ -146,7 +167,14 @@ describe('AssetConnection', () => {
       action: 'absent',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
@@ -161,7 +189,14 @@ describe('AssetConnection', () => {
       action: 'leave',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      onStatusUpdate
+    ).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
@@ -182,6 +217,23 @@ describe('AssetConnection', () => {
 
     expect(enhancedLocationListener).toHaveBeenCalledTimes(1);
     expect(enhancedLocationListener).toHaveBeenCalledWith(locationMessage.data);
+  });
+
+  it('should execute rawLocationListener with location message when publisher publishes raw location message', () => {
+    const rawLocationListener = jest.fn();
+    const locationMessage = {
+      data: {
+        stub: 'message',
+      },
+    };
+
+    mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessage));
+    mockSetImmediate.mockImplementation((fn) => fn());
+
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, rawLocationListener);
+
+    expect(rawLocationListener).toHaveBeenCalledTimes(1);
+    expect(rawLocationListener).toHaveBeenCalledWith(locationMessage.data);
   });
 
   it('should execute enhancedLocationListener with location messages when publisher publishes enhanced location message array', () => {
@@ -205,6 +257,29 @@ describe('AssetConnection', () => {
     expect(enhancedLocationListener).toHaveBeenCalledTimes(2);
     expect(enhancedLocationListener).toHaveBeenNthCalledWith(1, locationMessages.data[0]);
     expect(enhancedLocationListener).toHaveBeenNthCalledWith(2, locationMessages.data[1]);
+  });
+
+  it('should execute rawLocationListener with location messages when publisher publishes raw location message array', () => {
+    const rawLocationListener = jest.fn();
+    const locationMessages = {
+      data: [
+        {
+          stub: 'message',
+        },
+        {
+          other: 'message',
+        },
+      ],
+    };
+
+    mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessages));
+    mockSetImmediate.mockImplementation((fn) => fn());
+
+    new AssetConnection(new Logger(), trackingId, ablyOptions, rawLocationListener);
+
+    expect(rawLocationListener).toHaveBeenCalledTimes(2);
+    expect(rawLocationListener).toHaveBeenNthCalledWith(1, locationMessages.data[0]);
+    expect(rawLocationListener).toHaveBeenNthCalledWith(2, locationMessages.data[1]);
   });
 
   it('should update channel presence data when .performChangeResolution is called', () => {
