@@ -101,7 +101,7 @@ describe('AssetConnection', () => {
   });
 
   it('should subscribe to enhanced events when enhancedLocationListener is supplied', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions, jest.fn(), jest.fn());
+    new AssetConnection(new Logger(), trackingId, ablyOptions, jest.fn());
 
     expect(mockChannelSubscribe).toHaveBeenCalledTimes(1);
     expect(mockChannelSubscribe).toHaveBeenCalledWith(EventNames.Enhanced, expect.any(Function));
@@ -116,7 +116,7 @@ describe('AssetConnection', () => {
       action: 'enter',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
@@ -131,7 +131,7 @@ describe('AssetConnection', () => {
       action: 'present',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
@@ -146,7 +146,7 @@ describe('AssetConnection', () => {
       action: 'absent',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
@@ -161,7 +161,7 @@ describe('AssetConnection', () => {
       action: 'leave',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, onStatusUpdate).joinChannelPresence();
+    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, onStatusUpdate).joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
