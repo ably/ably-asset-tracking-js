@@ -246,17 +246,16 @@ p {
   color: white;
 }
 
-.hidden {
-  visibility: hidden;
-  display: none !important;
-  margin-top: 0 !important;
-}
-
 .setting {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 1rem;
+}
+
+.hidden {
+  visibility: hidden;
+  display: none;
 }
 
 .switch {
