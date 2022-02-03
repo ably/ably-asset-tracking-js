@@ -5,6 +5,7 @@ export class MapBoxMarker {
         this.el = document.createElement('div');
         this.el.className = 'marker-mapbox';
         this.rawEl = document.createElement('div');
+	this.rawEl.className = 'hidden';
 
         this.map = map;
         this.marker = new mapboxgl.Marker(this.el)
@@ -34,7 +35,7 @@ export class MapBoxMarker {
     }
 
     hideRawLocationMarker() {
-      this.rawEl.className = undefined;
+      this.rawEl.className = 'hidden';
     }
 
     getCurrentCoordinate() {
