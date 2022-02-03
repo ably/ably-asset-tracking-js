@@ -207,6 +207,8 @@ p {
 
 .hidden {
   visibility: hidden;
+  display: none !important;
+  margin-top: 0 !important;
 }
 
 .setting {

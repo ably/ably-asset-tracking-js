@@ -25,6 +25,9 @@ export class RiderConnection {
     this.renderSkippedLocations = false;
     this.skippedLocationInterval = 500;
     this.timeouts = [];
+    this.displayAccuracyCircle = true;
+    this.zoomLevel = 0;
+
     this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
       onLocationUpdate: (message) => {
@@ -36,10 +39,13 @@ export class RiderConnection {
       resolution: this.hiRes ? lowResolution : highResolution,
     });
     createMapSpecificZoomListener((zoom) => {
+      this.zoomLevel = zoom;
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
         this.subscriber.sendChangeRequest(highResolution);
+        this.rider?.createAccuracyCircle();
       } else if (zoom <= zoomThreshold && this.hiRes) {
+        this.rider?.hideAccuracyCircle();
         this.hiRes = false;
         this.subscriber.sendChangeRequest(lowResolution);
       }
@@ -85,15 +91,27 @@ export class RiderConnection {
       const interval = this.skippedLocationInterval / (allLocations.length - 1);
       allLocations.forEach((location, index) => {
         this.timeouts.push(setTimeout(() => {
-          this.rider.move(Coordinate.fromLocation(location), this.shouldSnap);
+          this.rider.move(Coordinate.fromLocation(location), location.properties.accuracyHorizontal, this.shouldSnap);
         }, interval * index));
       });
     } else {
-      this.rider.move(locationCoordinate, this.shouldSnap);
+      this.rider.move(locationCoordinate, message.location.properties.accuracyHorizontal, this.shouldSnap);
     }
   }
 
   onStatusUpdate(callbackFunction) {
     this.statusUpdateCallback = callbackFunction;
+  }
+
+  setDisplayAccuracyCircle(displayAccuracyCircle) {
+    if (this.displayAccuracyCircle && !displayAccuracyCircle) {
+      this.displayAccuracyCircle = false;
+      this.rider.hideAccuracyCircle();
+    } else if (!this.displayAccuracyCircle && displayAccuracyCircle) {
+      this.displayAccuracyCircle = true;
+      if (this.zoomLevel > zoomThreshold) {
+        this.rider?.createAccuracyCircle();
+      }
+    }
   }
 }

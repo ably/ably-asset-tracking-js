@@ -20,7 +20,15 @@ export class Vehicle {
         return this.marker.getCurrentCoordinate();
     }
 
-    async move(destinationCoordinate, snapToLocation = false) {
+    createAccuracyCircle() {
+      this.marker.createAccuracyCircle();
+    }
+
+    hideAccuracyCircle() {
+      this.marker.hideAccuracyCircle();
+    }
+
+    async move(destinationCoordinate, accuracy, snapToLocation = false) {
         this.movementsSinceLastFocused++;
 
         if (snapToLocation) {
@@ -31,7 +39,7 @@ export class Vehicle {
         this.moveBuffer = [];
 
         const currentCoordinate = this.marker.getCurrentCoordinate();
-        
+
         var path = turf.lineString([ currentCoordinate.toGeoJson(), destinationCoordinate.toGeoJson() ]);
         var pathLength = turf.length(path, { units: 'miles' });
 
@@ -43,24 +51,24 @@ export class Vehicle {
 
             const targetCoordinate = Coordinate.fromGeoJson(targetLocation.geometry.coordinates, destinationCoordinate.bearing);
 
-            this.moveBuffer.push(targetCoordinate);
+            this.moveBuffer.push({ targetCoordinate, accuracy });
         }
     }
 
     async animate() {
         if (this.moveBuffer.length === 0) {
             window.requestAnimationFrame(() => { this.animate(); });
-            return; 
+            return;
         }
 
-        const targetCoordinate = this.moveBuffer.shift();            
-        this.marker.updatePosition(targetCoordinate);
+        const { targetCoordinate, accuracy } = this.moveBuffer.shift();
+        this.marker.updatePosition(targetCoordinate, accuracy);
 
         if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
             this.movementsSinceLastFocused = 0;
             this.marker.focus();
         }
-        
+
         window.requestAnimationFrame(() => { this.animate(); });
-    }  
+    }
 }

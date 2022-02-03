@@ -10,6 +10,7 @@ export function bindUi(riderConnectionInstance) {
     const skippedLocationCheckbox = document.getElementById('render-skipped');
     const skippedLocationSettings = document.getElementById("skipped-location-settings");
     const skippedLocationIntervalInput = document.getElementById("skipped-location-interval-input");
+    const displayAccuracyCheckbox = document.getElementById("display-accuracy");
 
     function openSettingsOverlay() {
       settingsOverlay.style.display = "flex";
@@ -35,6 +36,10 @@ export function bindUi(riderConnectionInstance) {
     skippedLocationIntervalInput.addEventListener("change", (evt) => {
         const interval = Number(evt.target.value);
         if (!isNaN(interval)) riderConnectionInstance.setSkippedLocationInterval(interval);
+    });
+
+    displayAccuracyCheckbox.addEventListener('change', (cbEvent) => {
+      riderConnectionInstance.setDisplayAccuracyCircle(cbEvent.target.checked);
     });
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
