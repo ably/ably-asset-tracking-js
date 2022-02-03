@@ -20,7 +20,7 @@ export class GoogleMapsMarker {
         this.map.setZoom(16);
     }
 
-    createAccuracyCircle() {
+    showAccuracyCircle() {
       this.accuracyCircle.setVisible(true);
     }
 

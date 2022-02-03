@@ -20,8 +20,8 @@ export class Vehicle {
         return this.marker.getCurrentCoordinate();
     }
 
-    createAccuracyCircle() {
-      this.marker.createAccuracyCircle();
+    showAccuracyCircle() {
+      this.marker.showAccuracyCircle();
     }
 
     hideAccuracyCircle() {

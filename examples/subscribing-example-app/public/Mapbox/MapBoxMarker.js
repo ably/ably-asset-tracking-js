@@ -18,7 +18,7 @@ export class MapBoxMarker {
             .addTo(this.map);
     }
 
-    createAccuracyCircle() {
+    showAccuracyCircle() {
         if (!this.accuracyCircle) {
             this.accuracyCircle = new MapboxCircle(this.marker.getLngLat(), 1)
                 .addTo(this.map);

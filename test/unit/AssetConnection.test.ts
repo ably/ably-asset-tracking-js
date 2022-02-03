@@ -86,7 +86,15 @@ describe('AssetConnection', () => {
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, undefined, undefined, resolution).joinChannelPresence();
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      resolution
+    ).joinChannelPresence();
 
     expect(mockEnterClient).toHaveBeenCalledTimes(1);
     expect(mockEnterClient).toHaveBeenCalledWith(clientId, { type: ClientTypes.Subscriber, resolution });
