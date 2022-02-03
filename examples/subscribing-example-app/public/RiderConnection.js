@@ -46,7 +46,7 @@ export class RiderConnection {
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
         this.subscriber.sendChangeRequest(highResolution);
-        this.rider?.createAccuracyCircle();
+        this.rider?.showAccuracyCircle();
       } else if (zoom <= zoomThreshold && this.hiRes) {
         this.rider?.hideAccuracyCircle();
         this.hiRes = false;
@@ -117,7 +117,7 @@ export class RiderConnection {
     } else if (!this.displayAccuracyCircle && displayAccuracyCircle) {
       this.displayAccuracyCircle = true;
       if (this.zoomLevel > zoomThreshold) {
-        this.rider?.createAccuracyCircle();
+        this.rider?.showAccuracyCircle();
       }
     }
   }
