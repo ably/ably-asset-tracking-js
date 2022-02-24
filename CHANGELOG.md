@@ -1,6 +1,39 @@
 # Change log
 
-## [1.0.0-beta.2](https://github.com/ably/ably-asset-tracking-js/tree/1.0.0-beta.2)
+## [1.0.0-beta.3](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.3)
+
+[Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.2...v1.0.0-beta.3)
+
+**Implemented enhancements:**
+
+- Display the horizontal accuracy of locations in the subscriber example app [\#71](https://github.com/ably/ably-asset-tracking-js/issues/71)
+
+**Fixed bugs:**
+
+- Fix Mapbox directory name in mapbox.html in the example app [\#69](https://github.com/ably/ably-asset-tracking-js/issues/69)
+- Fix a security vulnerability with dependency confusion in the example app
+
+**Closed issues:**
+
+- Add raw location tracking marker to the Subscriber Example App [\#74](https://github.com/ably/ably-asset-tracking-js/issues/74)
+
+**Merged pull requests:**
+
+- Fix dependency confusion vulnerability in example app [\#79](https://github.com/ably/ably-asset-tracking-js/pull/79) ([owenpearson](https://github.com/owenpearson))
+- Raw location marker [\#75](https://github.com/ably/ably-asset-tracking-js/pull/75) ([owenpearson](https://github.com/owenpearson))
+- Bump follow-redirects from 1.13.2 to 1.14.7 [\#73](https://github.com/ably/ably-asset-tracking-js/pull/73) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Display accuracy circles in example app [\#72](https://github.com/ably/ably-asset-tracking-js/pull/72) ([owenpearson](https://github.com/owenpearson))
+- Rename MapBox to Mapbox [\#70](https://github.com/ably/ably-asset-tracking-js/pull/70) ([owenpearson](https://github.com/owenpearson))
+- Improving rendering [\#67](https://github.com/ably/ably-asset-tracking-js/pull/67) ([AndyNicks](https://github.com/AndyNicks))
+- Bump axios from 0.21.1 to 0.21.2 [\#66](https://github.com/ably/ably-asset-tracking-js/pull/66) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Allow rendering of skipped locations in example app [\#65](https://github.com/ably/ably-asset-tracking-js/pull/65) ([owenpearson](https://github.com/owenpearson))
+- Bump tmpl from 1.0.4 to 1.0.5 [\#63](https://github.com/ably/ably-asset-tracking-js/pull/63) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ws from 5.2.2 to 5.2.3 [\#61](https://github.com/ably/ably-asset-tracking-js/pull/61) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump url-parse from 1.5.1 to 1.5.3 [\#60](https://github.com/ably/ably-asset-tracking-js/pull/60) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump ws from 5.2.2 to 5.2.3 in /examples/subscribing-example-app [\#59](https://github.com/ably/ably-asset-tracking-js/pull/59) ([dependabot[bot]](https://github.com/apps/dependabot))
+
+
+## [1.0.0-beta.2](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.2)
 
 [Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.1...1.0.0-beta.2)
 
