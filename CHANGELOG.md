@@ -32,7 +32,6 @@
 - Bump url-parse from 1.5.1 to 1.5.3 [\#60](https://github.com/ably/ably-asset-tracking-js/pull/60) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump ws from 5.2.2 to 5.2.3 in /examples/subscribing-example-app [\#59](https://github.com/ably/ably-asset-tracking-js/pull/59) ([dependabot[bot]](https://github.com/apps/dependabot))
 
-
 ## [1.0.0-beta.2](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.2)
 
 [Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.1...1.0.0-beta.2)
