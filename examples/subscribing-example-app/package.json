@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "ably": "^1.2.1",
-    "ably-asset-tracking": "file:../../",
+    "@ably/asset-tracking": "file:../../",
     "dotenv": "^8.2.0",
     "express": "^4.17.1"
   },
