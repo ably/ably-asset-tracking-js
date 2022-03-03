@@ -33,6 +33,16 @@ export type SubscriberOptions = {
    * The desired resolution of updates, to be requested from the remote publisher.
    */
   resolution?: Resolution;
+
+  /**
+   * A callback to be notified when the publisher's calculated resolution of the asset changes.
+   */
+  onResolutionUpdate?: ResolutionListener;
+
+  /**
+   * A callback to be notified when the interval between location updates of the asset changes.
+   */
+  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
 };
 
 type GeoJsonProperties = {
@@ -55,6 +65,10 @@ export type LocationUpdate = {
 export type LocationListener = (locationUpdate: LocationUpdate) => unknown;
 
 export type StatusListener = (isOnline: boolean) => unknown;
+
+export type ResolutionListener = (resolution: Resolution) => unknown;
+
+export type LocationUpdateIntervalListener = (locationUpdateInterval: number) => unknown;
 
 /**
  * Governs how often to sample locations, at what level of positional accuracy, and how often to send them to

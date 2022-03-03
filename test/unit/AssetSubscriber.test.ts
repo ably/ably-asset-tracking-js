@@ -53,6 +53,8 @@ describe('Subscriber', () => {
     const onStatusUpdate = jest.fn();
     const onLocationUpdate = jest.fn();
     const onRawLocationUpdate = jest.fn();
+    const onResolutionUpdate = jest.fn();
+    const onLocationUpdateIntervalUpdate = jest.fn();
 
     const loggerOptions = {
       level: 5,
@@ -70,6 +72,8 @@ describe('Subscriber', () => {
       onRawLocationUpdate,
       loggerOptions,
       resolution,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate,
     });
 
     subscriber.start(trackingId);
@@ -82,6 +86,8 @@ describe('Subscriber', () => {
       onLocationUpdate,
       onRawLocationUpdate,
       onStatusUpdate,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate,
       resolution
     );
   });
