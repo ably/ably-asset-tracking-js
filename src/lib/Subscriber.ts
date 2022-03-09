@@ -1,5 +1,12 @@
 import { Types as AblyTypes } from 'ably';
-import { LocationListener, Resolution, StatusListener, SubscriberOptions } from '../types';
+import {
+  LocationListener,
+  LocationUpdateIntervalListener,
+  Resolution,
+  ResolutionListener,
+  StatusListener,
+  SubscriberOptions,
+} from '../types';
 import AssetConnection from './AssetConnection';
 import Logger from './utils/Logger';
 
@@ -8,6 +15,8 @@ class Subscriber {
   onStatusUpdate?: StatusListener;
   onLocationUpdate?: LocationListener;
   onRawLocationUpdate?: LocationListener;
+  onResolutionUpdate?: ResolutionListener;
+  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
   logger: Logger;
   assetConnection?: AssetConnection;
   resolution?: Resolution;
@@ -18,6 +27,8 @@ class Subscriber {
     this.onStatusUpdate = options.onStatusUpdate;
     this.onLocationUpdate = options.onLocationUpdate;
     this.onRawLocationUpdate = options.onRawLocationUpdate;
+    this.onResolutionUpdate = options.onResolutionUpdate;
+    this.onLocationUpdateIntervalUpdate = options.onLocationUpdateIntervalUpdate;
     this.resolution = options.resolution;
   }
 
@@ -29,6 +40,8 @@ class Subscriber {
       this.onLocationUpdate,
       this.onRawLocationUpdate,
       this.onStatusUpdate,
+      this.onResolutionUpdate,
+      this.onLocationUpdateIntervalUpdate,
       this.resolution
     );
     await this.assetConnection.joinChannelPresence();
