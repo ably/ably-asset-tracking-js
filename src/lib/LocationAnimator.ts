@@ -87,9 +87,13 @@ export class LocationAnimator {
    * Processes the [locationUpdate] and changes it into animation steps. This should be called each time a new
    * location update is received from the [Subscriber].
    */
-  async animateLocationUpdate(locationUpdate: LocationUpdate, expectedDesiredInterval: number): Promise<void> {
+  async animateLocationUpdate(
+    locationUpdate: LocationUpdate,
+    expectedDesiredIntervalInMilliseconds: number
+  ): Promise<void> {
     const animationSteps = this.createAnimationSteps(locationUpdate);
-    const expectedAnimationDuration = this.intentionalAnimationDelayInMilliseconds + expectedDesiredInterval;
+    const expectedAnimationDuration =
+      this.intentionalAnimationDelayInMilliseconds + expectedDesiredIntervalInMilliseconds;
 
     this.animationSteps = this.animationSteps.concat(animationSteps);
     const animationStepDuration = expectedAnimationDuration / this.animationSteps.length;
@@ -142,7 +146,7 @@ export class LocationAnimator {
   }
 
   /**
-   * Infinite loop that takes the animation steps, processes them * and delays the next step processing
+   * Infinite loop that takes the animation steps, processes them and delays the next step processing
    * by the current step duration.
    * Additionally, it updates the camera listener whenever a required amount of steps is processed.
    */
