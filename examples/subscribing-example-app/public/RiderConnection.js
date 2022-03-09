@@ -1,7 +1,7 @@
 import { Vehicle } from './Vehicle.js';
 import { Coordinate } from './Coordinate.js';
 
-const { Accuracy, Subscriber } = AblyAssetTracking;
+const { Accuracy, Subscriber, LocationAnimator } = AblyAssetTracking;
 
 const lowResolution = {
   accuracy: Accuracy.Balanced,
@@ -24,9 +24,17 @@ export class RiderConnection {
     this.hiRes = initialZoomLevel > 14;
     this.renderSkippedLocations = false;
     this.skippedLocationInterval = 500;
+    this.locationUpdateInterval = this.skippedLocationInterval;
     this.timeouts = [];
     this.displayAccuracyCircle = true;
     this.zoomLevel = 0;
+    this.animator = new LocationAnimator(
+      (position) => { this.rider?.move(position, false); },
+      () => { this.rider?.focusCamera(); }
+    )
+    this.rawAnimator = new LocationAnimator(
+      (position) => { this.rider?.move(position, true); }
+    )
 
     this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
@@ -40,6 +48,9 @@ export class RiderConnection {
         this.statusUpdateCallback(status);
       },
       resolution: this.hiRes ? lowResolution : highResolution,
+      onLocationUpdateIntervalUpdate: (desiredInterval) => {
+        this.locationUpdateInterval = desiredInterval
+      },
     });
     createMapSpecificZoomListener((zoom) => {
       this.zoomLevel = zoom;
@@ -53,7 +64,6 @@ export class RiderConnection {
         this.subscriber.sendChangeRequest(lowResolution);
       }
     });
-    this.shouldSnap = false;
   }
 
   async connect(channelId) {
@@ -76,33 +86,25 @@ export class RiderConnection {
     this.rider.setDisplayRawLocations(value);
   }
 
+  setShouldSnapToLocations(value) {
+    this.animator.snapToLocation = value;
+    this.rawAnimator.snapToLocation = value;
+  }
+
   processMessage(message, isRaw) {
     const locationCoordinate = Coordinate.fromMessage(message);
 
-    const riderId = locationCoordinate.id ?? 'default-id';
-
     if (!this.rider) {
       const marker = this.createMapSpecificMarker(locationCoordinate);
-      this.rider = new Vehicle(riderId, true, marker);
+      this.rider = new Vehicle(marker);
 
       marker.focus();
     }
 
-    if (this.timeouts.length > 0) {
-      this.timeouts.forEach(clearTimeout);
-      this.timeouts = [];
-    }
-
-    if (this.renderSkippedLocations && message.skippedLocations.length) {
-      const allLocations = [...message.skippedLocations, message.location];
-      const interval = this.skippedLocationInterval / (allLocations.length - 1);
-      allLocations.forEach((location, index) => {
-        this.timeouts.push(setTimeout(() => {
-          this.rider.move(Coordinate.fromLocation(location), location.properties.accuracyHorizontal, this.shouldSnap);
-        }, interval * index));
-      });
+    if (isRaw) {
+      this.rawAnimator.animateLocationUpdate(message, this.locationUpdateInterval)
     } else {
-      this.rider.move(locationCoordinate, message.location.properties.accuracyHorizontal, isRaw, this.shouldSnap);
+      this.animator.animateLocationUpdate(message, this.locationUpdateInterval)
     }
   }
 

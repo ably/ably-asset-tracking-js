@@ -37,6 +37,10 @@ export class Coordinate {
     return Coordinate.fromGeoJson(location.geometry.coordinates, location.properties.bearing);
   }
 
+  static fromPosition(position) {
+    return new Coordinate(position.latitude, position.longitude, position.bearing);
+  }
+
   static bearingToCompass(bearing) {
       if ((bearing >= 0 && bearing < 23) || (bearing >= 337 && bearing <= 360)) {
           return "N";
