@@ -1,5 +1,21 @@
 # Change log
 
+## [1.0.0-beta.4](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.4)
+
+[Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.3...v1.0.0-beta.4)
+
+**Implemented enhancements:**
+
+- Implement smooth animation mechanism  [\#83](https://github.com/ably/ably-asset-tracking-js/issues/83)
+- Move appropriate location rendering functional from example app to the SDK [\#76](https://github.com/ably/ably-asset-tracking-js/issues/76)
+
+**Merged pull requests:**
+
+- Implement smooth animations in the example app with LocationAnimator [\#85](https://github.com/ably/ably-asset-tracking-js/pull/85) ([KacperKluka](https://github.com/KacperKluka))
+- Add the LocationAnimator for smooth map marker animations [\#84](https://github.com/ably/ably-asset-tracking-js/pull/84) ([KacperKluka](https://github.com/KacperKluka))
+- Add resolution and location update interval listeners to the Subscriber SDK [\#82](https://github.com/ably/ably-asset-tracking-js/pull/82) ([KacperKluka](https://github.com/KacperKluka))
+
+
 ## [1.0.0-beta.3](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.3)
 
 [Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.2...v1.0.0-beta.3)
