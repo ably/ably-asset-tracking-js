@@ -70,6 +70,17 @@ export type ResolutionListener = (resolution: Resolution) => unknown;
 
 export type LocationUpdateIntervalListener = (locationUpdateInterval: number) => unknown;
 
+export type Position = {
+  latitude: number;
+  longitude: number;
+  bearing: number;
+  accuracy: number;
+};
+
+export type UpdateMapMarkerListener = (position: Position) => unknown;
+
+export type UpdateMapCameraListener = (position: Position) => unknown;
+
 /**
  * Governs how often to sample locations, at what level of positional accuracy, and how often to send them to
  * subscribers.
