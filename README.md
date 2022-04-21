@@ -22,7 +22,7 @@ This repository contains the Asset Subscribing SDK for Web.
 
 ### Documentation
 
-Visit the [Ably Asset Tracking](https://ably.com/documentation/asset-tracking) documentation for a complete API reference and code examples.
+Visit the [Ably Asset Tracking](https://ably.com/docs/asset-tracking) documentation for a complete API reference and code examples.
 
 ###  Useful Resources
 
