@@ -1,5 +1,11 @@
 import Ably, { Types as AblyTypes } from 'ably';
-import { LocationListener, Resolution, StatusListener } from '../types';
+import {
+  LocationListener,
+  LocationUpdateIntervalListener,
+  Resolution,
+  ResolutionListener,
+  StatusListener,
+} from '../types';
 import { ClientTypes } from './constants';
 import Logger from './utils/Logger';
 import { setImmediate } from './utils/utils';
@@ -17,6 +23,8 @@ class AssetConnection {
   onEnhancedLocationUpdate?: LocationListener;
   onRawLocationUpdate?: LocationListener;
   onStatusUpdate?: StatusListener;
+  onResolutionUpdate?: ResolutionListener;
+  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
   resolution: Resolution | null;
 
   constructor(
@@ -26,6 +34,8 @@ class AssetConnection {
     onEnhancedLocationUpdate?: LocationListener,
     onRawLocationUpdate?: LocationListener,
     onStatusUpdate?: StatusListener,
+    onResolutionUpdate?: ResolutionListener,
+    onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener,
     resolution?: Resolution
   ) {
     this.logger = logger;
@@ -33,6 +43,8 @@ class AssetConnection {
     this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
     this.onRawLocationUpdate = onRawLocationUpdate;
     this.onStatusUpdate = onStatusUpdate;
+    this.onResolutionUpdate = onResolutionUpdate;
+    this.onLocationUpdateIntervalUpdate = onLocationUpdateIntervalUpdate;
     this.resolution = resolution ?? null;
 
     this.ably = new Ably.Realtime.Promise(ablyOptions);
@@ -113,9 +125,25 @@ class AssetConnection {
     if (data?.type === ClientTypes.Publisher) {
       if (['enter', 'present'].includes(presenceMessage.action)) {
         this.notifyAssetIsOnline();
+        if (data.resolution) {
+          this.updatePublisherResolutionInformation(data.resolution);
+        }
       } else if (['leave', 'absent'].includes(presenceMessage.action)) {
         this.notifyAssetIsOffline();
+      } else if ('update' === presenceMessage.action) {
+        if (data.resolution) {
+          this.updatePublisherResolutionInformation(data.resolution);
+        }
       }
+    }
+  };
+
+  private updatePublisherResolutionInformation = (resolution: Resolution) => {
+    if (this.onResolutionUpdate) {
+      this.onResolutionUpdate(resolution);
+    }
+    if (this.onLocationUpdateIntervalUpdate) {
+      this.onLocationUpdateIntervalUpdate(resolution.desiredInterval);
     }
   };
 

@@ -1,95 +1,50 @@
-import { Coordinate } from "./Coordinate.js";
+import { Coordinate } from './Coordinate.js';
 
 export class Vehicle {
 
-    constructor(id, follow, markerWrapper) {
-        this.id = id;
-        this.follow = follow || false;
+  constructor(markerWrapper) {
+    this.marker = markerWrapper;
+  }
 
-        this.marker = markerWrapper;
+  get position() {
+    return this.marker.getCurrentCoordinate();
+  }
 
-        this.moveBuffer = [];
-        this.animationRateMs = 33;
-        this.animate();
+  showAccuracyCircle() {
+    this.marker.showAccuracyCircle();
+  }
 
-        this.movementsSinceLastFocused = 0;
-        this.numberOfMovementsToFocusAfter = 100;
-    }
+  hideAccuracyCircle() {
+    this.marker.hideAccuracyCircle();
+  }
 
-    get position() {
-        return this.marker.getCurrentCoordinate();
-    }
+  showRawLocationMarker() {
+    this.marker.showRawLocationMarker();
+  }
 
-    showAccuracyCircle() {
-      this.marker.showAccuracyCircle();
-    }
+  hideRawLocationMarker() {
+    this.marker.hideRawLocationMarker();
+  }
 
-    hideAccuracyCircle() {
-      this.marker.hideAccuracyCircle();
-    }
-
-    showRawLocationMarker() {
+  setDisplayRawLocations(value) {
+    if (value) {
       this.marker.showRawLocationMarker();
-    }
-
-    hideRawLocationMarker() {
+    } else {
       this.marker.hideRawLocationMarker();
     }
+  }
 
-    setDisplayRawLocations(value) {
-      if (value) {
-        this.marker.showRawLocationMarker();
-      } else {
-        this.marker.hideRawLocationMarker();
-      }
+  async move(destinationPosition, isRaw) {
+    const destinationCoordinate = Coordinate.fromPosition(destinationPosition);
+    const accuracy = destinationPosition.accuracy;
+    if (isRaw) {
+      this.marker.updateRawPosition(destinationCoordinate, accuracy);
+    } else {
+      this.marker.updatePosition(destinationCoordinate, accuracy);
     }
+  }
 
-    async move(destinationCoordinate, accuracy, isRaw, snapToLocation = false) {
-        this.movementsSinceLastFocused++;
-
-        if (snapToLocation) {
-            this.moveBuffer = [ destinationCoordinate ];
-            return;
-        }
-
-        this.moveBuffer = [];
-
-        const currentCoordinate = this.marker.getCurrentCoordinate();
-
-        var path = turf.lineString([ currentCoordinate.toGeoJson(), destinationCoordinate.toGeoJson() ]);
-        var pathLength = turf.length(path, { units: 'miles' });
-
-        var numSteps = 60; // This is the FPS
-
-        for (let step = 0; step <= numSteps; step++) {
-            const curDistance = step / numSteps * pathLength;
-            const targetLocation = turf.along(path, curDistance, { units: "miles" });
-
-            const targetCoordinate = Coordinate.fromGeoJson(targetLocation.geometry.coordinates, destinationCoordinate.bearing);
-
-            this.moveBuffer.push({ targetCoordinate, accuracy, isRaw });
-        }
-    }
-
-    async animate() {
-        if (this.moveBuffer.length === 0) {
-            window.requestAnimationFrame(() => { this.animate(); });
-            return;
-        }
-
-        const { targetCoordinate, accuracy, isRaw } = this.moveBuffer.shift();
-
-        if (isRaw) {
-            this.marker.updateRawPosition(targetCoordinate, accuracy);
-        } else {
-            this.marker.updatePosition(targetCoordinate, accuracy);
-
-            if (this.movementsSinceLastFocused >= this.numberOfMovementsToFocusAfter) {
-                this.movementsSinceLastFocused = 0;
-                this.marker.focus();
-            }
-        }
-
-        window.requestAnimationFrame(() => { this.animate(); });
-    }
+  focusCamera() {
+    this.marker.focus();
+  }
 }

@@ -93,6 +93,8 @@ describe('AssetConnection', () => {
       undefined,
       undefined,
       undefined,
+      undefined,
+      undefined,
       resolution
     ).joinChannelPresence();
 
@@ -200,6 +202,116 @@ describe('AssetConnection', () => {
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
+  });
+
+  it('should call publisher resolution listeners when publisher enters channel presence and has a resolution', () => {
+    const onResolutionUpdate = jest.fn();
+    const onLocationUpdateIntervalUpdate = jest.fn();
+    const publisherResolution = { accuracy: 'BALANCED', desiredInterval: 1, minimumDisplacement: 1.0 };
+    const presenceMessage = {
+      data: {
+        type: ClientTypes.Publisher,
+        resolution: publisherResolution,
+      },
+      action: 'enter',
+    };
+    mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate
+    ).joinChannelPresence();
+
+    expect(onResolutionUpdate).toHaveBeenCalledTimes(1);
+    expect(onResolutionUpdate).toHaveBeenCalledWith(publisherResolution);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(1);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledWith(publisherResolution.desiredInterval);
+  });
+
+  it('should not call publisher resolution listeners when publisher enters channel presence and does not have a resolution', () => {
+    const onResolutionUpdate = jest.fn();
+    const onLocationUpdateIntervalUpdate = jest.fn();
+    const presenceMessage = {
+      data: {
+        type: ClientTypes.Publisher,
+        resolution: null,
+      },
+      action: 'enter',
+    };
+    mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate
+    ).joinChannelPresence();
+
+    expect(onResolutionUpdate).toHaveBeenCalledTimes(0);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(0);
+  });
+
+  it('should call publisher resolution listeners when publisher updates channel presence and has a resolution', () => {
+    const onResolutionUpdate = jest.fn();
+    const onLocationUpdateIntervalUpdate = jest.fn();
+    const publisherResolution = { accuracy: 'BALANCED', desiredInterval: 1, minimumDisplacement: 1.0 };
+    const presenceMessage = {
+      data: {
+        type: ClientTypes.Publisher,
+        resolution: publisherResolution,
+      },
+      action: 'update',
+    };
+    mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate
+    ).joinChannelPresence();
+
+    expect(onResolutionUpdate).toHaveBeenCalledTimes(1);
+    expect(onResolutionUpdate).toHaveBeenCalledWith(publisherResolution);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(1);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledWith(publisherResolution.desiredInterval);
+  });
+
+  it('should not call publisher resolution listeners when publisher updates channel presence and does not have a resolution', () => {
+    const onResolutionUpdate = jest.fn();
+    const onLocationUpdateIntervalUpdate = jest.fn();
+    const presenceMessage = {
+      data: {
+        type: ClientTypes.Publisher,
+        resolution: null,
+      },
+      action: 'update',
+    };
+    mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
+    new AssetConnection(
+      new Logger(),
+      trackingId,
+      ablyOptions,
+      undefined,
+      undefined,
+      undefined,
+      onResolutionUpdate,
+      onLocationUpdateIntervalUpdate
+    ).joinChannelPresence();
+
+    expect(onResolutionUpdate).toHaveBeenCalledTimes(0);
+    expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(0);
   });
 
   it('should execute enhancedLocationListener with location message when publisher publishes enhanced location message', () => {

@@ -48,7 +48,7 @@ export function bindUi(riderConnectionInstance) {
     });
 
     animationCheckbox.addEventListener("change", (cbEvent) => {
-        riderConnectionInstance.shouldSnap = !cbEvent.target.checked;
+        riderConnectionInstance.setShouldSnapToLocations(!cbEvent.target.checked);
     });
 
     channelIdTextBox.addEventListener("keyup", (e) => {
