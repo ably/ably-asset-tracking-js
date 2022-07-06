@@ -96,9 +96,7 @@ const trackingId = '<some application defined asset tracking identifier>';
 
 ## Example App
 
-This repository also contains an example app that showcases how the Ably Asset Tracking SDK can be used:
-
-- the [Asset Subscribing example app](examples/subscribing-example-app/)
+An example app that showcases how the Ably Asset Tracking SDK can be used is located at [Asset Subscribing example app](https://github.com/ably/asset-tracking-web-customer-app-demo)
 
 ## Development
 

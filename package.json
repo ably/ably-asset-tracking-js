@@ -5,9 +5,9 @@
   "main": "dist/main.js",
   "typings": "index.d.ts",
   "files": [
-      "src/**",
-      "dist/**",
-      "index.d.ts"
+    "src/**",
+    "dist/**",
+    "index.d.ts"
   ],
   "scripts": {
     "build": "webpack",
