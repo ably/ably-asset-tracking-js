@@ -1,5 +1,6 @@
 import * as types from '.';
 
+
 /**
  * Represents a subscriber. Subscribers maintain the Ably connection, relaying location updates for a tracked item back
  * to the local application as they are received from the remote publisher.
@@ -31,4 +32,10 @@ export class Subscriber {
    * @async
    */
   async stop(): Promise<void>;
+
+  onStatusUpdate?: types.StatusListener;
+  onLocationUpdate?: types.LocationListener;
+  onRawLocationUpdate?: types.LocationListener;
+  onResolutionUpdate?: types.ResolutionListener;
+  onLocationUpdateIntervalUpdate?: types.LocationUpdateIntervalListener;
 }
