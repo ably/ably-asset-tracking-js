@@ -33,6 +33,7 @@ class Subscriber {
   }
 
   start = async (trackingId: string): Promise<void> => {
+    if (this.assetConnection) return;
     this.assetConnection = new AssetConnection(
       this.logger,
       trackingId,
