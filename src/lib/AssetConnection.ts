@@ -111,7 +111,6 @@ class AssetConnection {
 
   private leaveChannelPresence = async () => {
     this.channel.presence.unsubscribe();
-    this.notifyAssetIsOffline();
     try {
       await this.channel.presence.leaveClient(this.ably.auth.clientId);
     } catch (e) {

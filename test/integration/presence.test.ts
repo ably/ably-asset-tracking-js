@@ -7,8 +7,11 @@ describe('presence', () => {
 
   before(async function () {
     this.timeout(5000);
-    const key = AblyTestApp.keys[0].keyStr;
+  });
 
+  beforeEach(async function () {
+    const key = AblyTestApp.keys[0].keyStr;
+    publisher = new MockPublisher(key);
     subscriber = new Subscriber({
       ablyOptions: {
         key,
@@ -16,8 +19,10 @@ describe('presence', () => {
         clientId: 'someClient',
       },
     });
+  });
 
-    publisher = new MockPublisher(key);
+  afterEach(async function () {
+    await subscriber.stop();
   });
 
   it('enters channel presence on start', (done) => {
