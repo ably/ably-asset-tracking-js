@@ -21,8 +21,9 @@ describe('location', () => {
 
   it('can start/stop tracking an asset without error', async () => {
     const subscriber = new Subscriber({ ablyOptions });
-    subscriber.start(getRandomChannelName()).then(() => {
-      subscriber.stop();
+    const asset = subscriber.get(getRandomChannelName());
+    asset.start().then(() => {
+      asset.stop();
     });
   });
 
@@ -32,12 +33,14 @@ describe('location', () => {
 
     const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
-      subscriber.stop().then(done);
+      asset.stop().then(done);
     };
 
-    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions });
+    const asset = subscriber.get(channel);
+    asset.addLocationListener(onLocationUpdate);
 
-    subscriber.start(channel).then(() => {
+    asset.start().then(() => {
       publisher.sendEnhancedMessage(channel, location);
     });
   });
@@ -48,13 +51,15 @@ describe('location', () => {
 
     const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
-      subscriber.stop().then(done);
+      asset.stop().then(done);
     };
 
-    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions });
+    const asset = subscriber.get(channel);
+    asset.addLocationListener(onLocationUpdate);
 
     publisher.sendEnhancedMessage(channel, location).then(() => {
-      subscriber.start(channel);
+      asset.start();
     });
   });
 
@@ -64,12 +69,14 @@ describe('location', () => {
 
     const onLocationUpdate = (msg: unknown) => {
       expect(msg).to.deep.equal(location);
-      subscriber.stop().then(done);
+      asset.stop().then(done);
     };
 
-    const subscriber = new Subscriber({ ablyOptions, onLocationUpdate });
+    const subscriber = new Subscriber({ ablyOptions });
+    const asset = subscriber.get(channel);
+    asset.addLocationListener(onLocationUpdate);
 
-    subscriber.start(channel).then(() => {
+    asset.start().then(() => {
       publisher.sendEnhancedMessage(channel, [location]);
     });
   });

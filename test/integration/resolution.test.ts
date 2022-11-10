@@ -34,7 +34,7 @@ describe('resolution', () => {
       done();
     });
 
-    new Subscriber({ ablyOptions, resolution }).start(channel);
+    new Subscriber({ ablyOptions }).get(channel, resolution).start();
   });
 
   it('sends new requested resoltion in presence data when sendChangeRequest is called', (done) => {
@@ -50,17 +50,9 @@ describe('resolution', () => {
       done();
     });
 
-    const subscriber = new Subscriber({ ablyOptions });
-    subscriber.start(channel).then(() => {
-      subscriber.sendChangeRequest(resolution);
+    const asset = new Subscriber({ ablyOptions }).get(channel);
+    asset.start().then(() => {
+      asset.sendChangeRequest(resolution);
     });
-  });
-
-  it('rejects promise when sendChangeRequest is called without an asset', () => {
-    const subscriber = new Subscriber({ ablyOptions });
-
-    expect(() =>
-      subscriber.sendChangeRequest({ accuracy: Accuracy.Maximum, desiredInterval: 108, minimumDisplacement: 109 })
-    ).to.throw;
   });
 });

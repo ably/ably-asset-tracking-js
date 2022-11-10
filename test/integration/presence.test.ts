@@ -21,43 +21,51 @@ describe('presence', () => {
     });
   });
 
-  afterEach(async function () {
-    await subscriber.stop();
-  });
-
   it('enters channel presence on start', (done) => {
     const channel = getRandomChannelName();
+    const asset = subscriber.get(channel);
+
     publisher.onSubscriberPresenceEnter(channel, async () => {
-      await subscriber.stop();
+      await asset.stop();
       done();
     });
-    subscriber.start(channel);
+
+    asset.start();
   });
 
   it('leaves channel presence on stop', (done) => {
     const channel = getRandomChannelName();
+    const asset = subscriber.get(channel);
+
     publisher.onSubscriberPresenceLeave(channel, done);
-    subscriber.start(channel).then(() => {
-      subscriber.stop();
+
+    asset.start().then(() => {
+      asset.stop();
     });
   });
 
   it('calls onStatusUpdate when publisher is already present', (done) => {
     const channel = getRandomChannelName();
-    subscriber.onStatusUpdate = (status) => {
+    const asset = subscriber.get(channel);
+
+    asset.addStatusListener((status) => {
       if (status) done();
-    };
+    });
+
     publisher.enterPresence(channel).then(() => {
-      subscriber.start(channel);
+      asset.start();
     });
   });
 
   it('calls onStatusUpdate when publisher enters presence', (done) => {
     const channel = getRandomChannelName();
-    subscriber.onStatusUpdate = (status) => {
+    const asset = subscriber.get(channel);
+
+    asset.addStatusListener((status) => {
       if (status) done();
-    };
-    subscriber.start(channel).then(() => {
+    });
+
+    asset.start().then(() => {
       publisher.enterPresence(channel);
     });
   });
@@ -65,10 +73,11 @@ describe('presence', () => {
   it('calls onStatusUpdate when publisher leaves presence', (done) => {
     const channel = getRandomChannelName();
     publisher.enterPresence(channel);
-    subscriber.onStatusUpdate = (status) => {
+    const asset = subscriber.get(channel);
+    asset.addStatusListener((status) => {
       if (!status) done();
-    };
-    subscriber.start(channel).then(() => {
+    });
+    asset.start().then(() => {
       publisher.leavePresence(channel);
     });
   });

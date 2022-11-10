@@ -1,66 +1,34 @@
-import { Types as AblyTypes } from 'ably';
-import {
-  LocationListener,
-  LocationUpdateIntervalListener,
-  Resolution,
-  ResolutionListener,
-  StatusListener,
-  SubscriberOptions,
-} from '../types';
-import AssetConnection from './AssetConnection';
+import * as Ably from 'ably';
+import { Resolution, SubscriberOptions } from '../types';
+import Asset from './Asset';
 import Logger from './utils/Logger';
 
 class Subscriber {
-  ablyOptions: AblyTypes.ClientOptions;
-  onStatusUpdate?: StatusListener;
-  onLocationUpdate?: LocationListener;
-  onRawLocationUpdate?: LocationListener;
-  onResolutionUpdate?: ResolutionListener;
-  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
+  ablyOptions: Ably.Types.ClientOptions;
   logger: Logger;
-  assetConnection?: AssetConnection;
-  resolution?: Resolution;
+  assets: Map<string, Asset>;
+  client: Ably.Types.RealtimePromise;
 
   constructor(options: SubscriberOptions) {
     this.logger = new Logger(options.loggerOptions);
     this.ablyOptions = options.ablyOptions;
-    this.onStatusUpdate = options.onStatusUpdate;
-    this.onLocationUpdate = options.onLocationUpdate;
-    this.onRawLocationUpdate = options.onRawLocationUpdate;
-    this.onResolutionUpdate = options.onResolutionUpdate;
-    this.onLocationUpdateIntervalUpdate = options.onLocationUpdateIntervalUpdate;
-    this.resolution = options.resolution;
+    this.assets = new Map();
+    this.client = new Ably.Realtime.Promise(this.ablyOptions);
   }
 
-  start = async (trackingId: string): Promise<void> => {
-    if (this.assetConnection) return;
-    this.assetConnection = new AssetConnection(
-      this.logger,
-      trackingId,
-      this.ablyOptions,
-      this.onLocationUpdate,
-      this.onRawLocationUpdate,
-      this.onStatusUpdate,
-      this.onResolutionUpdate,
-      this.onLocationUpdateIntervalUpdate,
-      this.resolution
-    );
-    await this.assetConnection.joinChannelPresence();
-  };
-
-  sendChangeRequest = async (resolution: Resolution): Promise<void> => {
-    this.resolution = resolution;
-    if (!this.assetConnection) {
-      throw new Error('Cannot change resolution; no asset is currently being tracked.');
-    } else {
-      await this.assetConnection.performChangeResolution(resolution);
+  get(trackingId: string, resolution?: Resolution): Asset {
+    if (this.assets.has(trackingId)) {
+      return this.assets.get(trackingId) as Asset;
     }
-  };
 
-  stop = async (): Promise<void> => {
-    await this.assetConnection?.close?.();
-    delete this.assetConnection;
-  };
+    const asset = new Asset(this, trackingId, resolution);
+    this.assets.set(trackingId, asset);
+    return asset;
+  }
+
+  close(): void {
+    this.client.close();
+  }
 }
 
 export default Subscriber;

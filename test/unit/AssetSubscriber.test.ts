@@ -1,31 +1,28 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-import AssetConnection from '../../src/lib/AssetConnection';
 import Subscriber from '../../src/lib/Subscriber';
 import Logger from '../../src/lib/utils/Logger';
+import { Types } from 'ably';
+import Asset from '../../src/lib/Asset';
 import { mocked } from 'ts-jest/utils';
-import { Accuracy } from '../../src/lib/constants';
 
 // This is the simplest constructor options object that Typescript will allow to compile
 const basicOptions = {
   ablyOptions: {},
 };
 
-const mockClose = jest.fn();
-const mockPerformChangeResolution = jest.fn();
-const mockJoinChannelPresence = jest.fn();
-jest.mock('../../src/lib/AssetConnection');
+jest.mock('../../src/lib/Asset');
 jest.mock('../../src/lib/utils/Logger');
-const mockAssetConnection = mocked(AssetConnection, true);
+
+const mockAblyConstructor = jest.fn();
+const mockAssetConstructor = mocked(Asset, true);
+const mockClose = jest.fn();
+
+jest.mock('ably', () => ({
+  Realtime: {
+    Promise: (options: Types.ClientOptions) => mockAblyConstructor(options),
+  },
+}));
 
 describe('Subscriber', () => {
-  beforeEach(() => {
-    mockAssetConnection.mockReturnValue(({
-      close: mockClose,
-      performChangeResolution: mockPerformChangeResolution,
-      joinChannelPresence: mockJoinChannelPresence,
-    } as unknown) as AssetConnection);
-  });
-
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -48,105 +45,30 @@ describe('Subscriber', () => {
     expect(Logger).toHaveBeenCalledWith(loggerOptions);
   });
 
-  it('should call the AssetConnection constructor with correct args when .start() is called', () => {
+  it('should create a new Ably.Realtime.Promise instance on init', () => {
     const ablyOptions = {};
-    const onStatusUpdate = jest.fn();
-    const onLocationUpdate = jest.fn();
-    const onRawLocationUpdate = jest.fn();
-    const onResolutionUpdate = jest.fn();
-    const onLocationUpdateIntervalUpdate = jest.fn();
+    new Subscriber({ ablyOptions });
 
-    const loggerOptions = {
-      level: 5,
-    };
-    const resolution = {
-      accuracy: Accuracy.Maximum,
-      desiredInterval: 3,
-      minimumDisplacement: 4,
-    };
-    const trackingId = 'trackingId';
-    const subscriber = new Subscriber({
-      ablyOptions,
-      onStatusUpdate,
-      onLocationUpdate,
-      onRawLocationUpdate,
-      loggerOptions,
-      resolution,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate,
+    expect(mockAblyConstructor).toHaveBeenCalledTimes(1);
+    expect(mockAblyConstructor).toHaveBeenCalledWith(ablyOptions);
+  });
+
+  it('should return the same asset when get called multiple times', () => {
+    const subscriber = new Subscriber(basicOptions);
+    subscriber.get('trackingId');
+    subscriber.get('trackingId');
+    expect(mockAssetConstructor).toHaveBeenCalledTimes(1);
+  });
+
+  it('should close ably client when close called', () => {
+    mockAblyConstructor.mockReturnValue({
+      close: mockClose,
     });
 
-    subscriber.start(trackingId);
-
-    expect(AssetConnection).toHaveBeenCalledTimes(1);
-    expect(AssetConnection).toHaveBeenCalledWith(
-      subscriber.logger,
-      trackingId,
-      ablyOptions,
-      onLocationUpdate,
-      onRawLocationUpdate,
-      onStatusUpdate,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate,
-      resolution
-    );
-  });
-
-  it('should call AssetConnection.joinChannelPresence() when start is called', async () => {
     const subscriber = new Subscriber(basicOptions);
 
-    await subscriber.start('trackingId');
-    expect(mockJoinChannelPresence).toHaveBeenCalledTimes(1);
-  });
+    subscriber.close();
 
-  it('should call AssetConnection.close() when .stop() is called', async () => {
-    const subscriber = new Subscriber(basicOptions);
-
-    await subscriber.start('trackingId');
-    await subscriber.stop();
     expect(mockClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('should no longer have an AssetConnection once .stop() has been called', async () => {
-    const subscriber = new Subscriber(basicOptions);
-
-    await subscriber.start('trackingId');
-
-    expect(subscriber.assetConnection).toBeInstanceOf(Object);
-
-    await subscriber.stop();
-
-    expect(subscriber.assetConnection).toBe(undefined);
-  });
-
-  it('should call AssetConnection.performChangeResolution() when .sendChangeRequest() is called', async () => {
-    const subscriber = new Subscriber(basicOptions);
-    const resolution = {
-      accuracy: Accuracy.Balanced,
-      desiredInterval: 4,
-      minimumDisplacement: 3,
-    };
-
-    await subscriber.start('trackingId');
-    await subscriber.sendChangeRequest(resolution);
-
-    expect(mockPerformChangeResolution).toHaveBeenCalledTimes(1);
-    expect(mockPerformChangeResolution).toHaveBeenCalledWith(resolution);
-  });
-
-  it('should reject promise when .sendChangeRequest() is called without asset being tracked', async () => {
-    const subscriber = new Subscriber(basicOptions);
-    const resolution = {
-      accuracy: Accuracy.High,
-      desiredInterval: 4,
-      minimumDisplacement: 3,
-    };
-
-    try {
-      await subscriber.sendChangeRequest(resolution);
-      fail('sendChangeRequest did not reject promise');
-    } catch (e) {
-      expect(e.message).toBe('Cannot change resolution; no asset is currently being tracked.');
-    }
   });
 });

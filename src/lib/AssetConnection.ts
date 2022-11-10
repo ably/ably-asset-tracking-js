@@ -1,4 +1,4 @@
-import Ably, { Types as AblyTypes } from 'ably';
+import { Types as AblyTypes } from 'ably';
 import {
   LocationListener,
   LocationUpdateIntervalListener,
@@ -7,6 +7,7 @@ import {
   StatusListener,
 } from '../types';
 import { ClientTypes } from './constants';
+import Subscriber from './Subscriber';
 import Logger from './utils/Logger';
 import { setImmediate } from './utils/utils';
 
@@ -20,62 +21,56 @@ class AssetConnection {
   ably: AblyTypes.RealtimePromise;
   channel: AblyTypes.RealtimeChannelPromise;
   trackingId: string;
-  onEnhancedLocationUpdate?: LocationListener;
-  onRawLocationUpdate?: LocationListener;
-  onStatusUpdate?: StatusListener;
-  onResolutionUpdate?: ResolutionListener;
-  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
   resolution: Resolution | null;
+  enhancedLocationListeners: Set<LocationListener>;
+  rawLocationListeners: Set<LocationListener>;
+  statusListeners: Set<StatusListener>;
+  resolutionListeners: Set<ResolutionListener>;
+  locationUpdateIntervalListeners: Set<LocationUpdateIntervalListener>;
 
-  constructor(
-    logger: Logger,
-    trackingId: string,
-    ablyOptions: AblyTypes.ClientOptions,
-    onEnhancedLocationUpdate?: LocationListener,
-    onRawLocationUpdate?: LocationListener,
-    onStatusUpdate?: StatusListener,
-    onResolutionUpdate?: ResolutionListener,
-    onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener,
-    resolution?: Resolution
-  ) {
-    this.logger = logger;
+  constructor(subscriber: Subscriber, trackingId: string, resolution?: Resolution) {
+    this.logger = subscriber.logger;
+    this.ably = subscriber.client;
     this.trackingId = trackingId;
-    this.onEnhancedLocationUpdate = onEnhancedLocationUpdate;
-    this.onRawLocationUpdate = onRawLocationUpdate;
-    this.onStatusUpdate = onStatusUpdate;
-    this.onResolutionUpdate = onResolutionUpdate;
-    this.onLocationUpdateIntervalUpdate = onLocationUpdateIntervalUpdate;
     this.resolution = resolution ?? null;
 
-    this.ably = new Ably.Realtime.Promise(ablyOptions);
     this.channel = this.ably.channels.get(`tracking:${trackingId}`, {
       params: { rewind: '1' },
     });
 
-    if (this.onEnhancedLocationUpdate) {
-      this.subscribeForEnhancedEvents(this.onEnhancedLocationUpdate);
-    }
-
-    if (this.onRawLocationUpdate) {
-      this.subscribeForRawEvents(this.onRawLocationUpdate);
-    }
+    this.enhancedLocationListeners = new Set();
+    this.rawLocationListeners = new Set();
+    this.statusListeners = new Set();
+    this.resolutionListeners = new Set();
+    this.locationUpdateIntervalListeners = new Set();
   }
 
-  close = async (): Promise<void> => {
-    this.channel.unsubscribe();
-    await this.leaveChannelPresence();
-    this.ably.close();
-  };
+  async start(): Promise<void> {
+    await this.subscribeForEnhancedEvents();
 
-  performChangeResolution = async (resolution: Resolution): Promise<void> => {
+    await this.subscribeForRawEvents();
+
+    await this.joinChannelPresence();
+  }
+
+  async close(): Promise<void> {
+    this.channel.unsubscribe();
+    this.ably.channels.release(this.trackingId);
+    await this.leaveChannelPresence();
+  }
+
+  async performChangeResolution(resolution: Resolution): Promise<void> {
     await this.channel.presence.update({
       type: ClientTypes.Subscriber,
       resolution,
     });
-  };
+  }
 
-  joinChannelPresence = async (): Promise<void> => {
-    this.channel.presence.subscribe(this.onPresenceMessage);
+  async joinChannelPresence(): Promise<void> {
+    this.channel.presence.subscribe((msg) => {
+      this.onPresenceMessage(msg);
+    });
+
     return this.channel.presence
       .enterClient(this.ably.auth.clientId, {
         type: ClientTypes.Subscriber,
@@ -85,31 +80,51 @@ class AssetConnection {
         this.logger.logError(`Error entering channel presence: ${reason}`);
         throw new Error(reason);
       });
-  };
+  }
 
-  private subscribeForRawEvents = (rawLocationListener: LocationListener) => {
+  private subscribeForRawEvents() {
     this.channel.subscribe(EventNames.Raw, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach((msg) => setImmediate(() => rawLocationListener(msg)));
+        parsedMessage.forEach((msg) =>
+          setImmediate(() => {
+            this.rawLocationListeners.forEach((listener) => {
+              listener(msg);
+            });
+          })
+        );
       } else {
-        setImmediate(() => rawLocationListener(parsedMessage));
+        setImmediate(() => {
+          this.rawLocationListeners.forEach((listener) => {
+            listener(parsedMessage);
+          });
+        });
       }
     });
-  };
+  }
 
-  private subscribeForEnhancedEvents = (enhancedLocationListener: LocationListener) => {
+  private subscribeForEnhancedEvents() {
     this.channel.subscribe(EventNames.Enhanced, (message) => {
       const parsedMessage = typeof message.data === 'string' ? JSON.parse(message.data) : message.data;
       if (Array.isArray(parsedMessage)) {
-        parsedMessage.forEach((msg) => setImmediate(() => enhancedLocationListener(msg)));
+        parsedMessage.forEach((msg) =>
+          setImmediate(() => {
+            this.enhancedLocationListeners.forEach((listener) => {
+              listener(msg);
+            });
+          })
+        );
       } else {
-        setImmediate(() => enhancedLocationListener(parsedMessage));
+        setImmediate(() => {
+          this.enhancedLocationListeners.forEach((listener) => {
+            listener(parsedMessage);
+          });
+        });
       }
     });
-  };
+  }
 
-  private leaveChannelPresence = async () => {
+  private async leaveChannelPresence() {
     this.channel.presence.unsubscribe();
     try {
       await this.channel.presence.leaveClient(this.ably.auth.clientId);
@@ -117,9 +132,9 @@ class AssetConnection {
       this.logger.logError(`Error leaving channel presence: ${e.reason}`);
       throw new Error(e.reason);
     }
-  };
+  }
 
-  private onPresenceMessage = (presenceMessage: AblyTypes.PresenceMessage) => {
+  private onPresenceMessage(presenceMessage: AblyTypes.PresenceMessage) {
     const data = typeof presenceMessage.data === 'string' ? JSON.parse(presenceMessage.data) : presenceMessage.data;
     if (data?.type === ClientTypes.Publisher) {
       if (['enter', 'present'].includes(presenceMessage.action)) {
@@ -135,24 +150,28 @@ class AssetConnection {
         }
       }
     }
-  };
+  }
 
-  private updatePublisherResolutionInformation = (resolution: Resolution) => {
-    if (this.onResolutionUpdate) {
-      this.onResolutionUpdate(resolution);
-    }
-    if (this.onLocationUpdateIntervalUpdate) {
-      this.onLocationUpdateIntervalUpdate(resolution.desiredInterval);
-    }
-  };
+  private updatePublisherResolutionInformation(resolution: Resolution) {
+    this.resolutionListeners.forEach((listener) => {
+      listener(resolution);
+    });
+    this.locationUpdateIntervalListeners.forEach((listener) => {
+      listener(resolution.desiredInterval);
+    });
+  }
 
-  private notifyAssetIsOnline = () => {
-    this?.onStatusUpdate?.(true);
-  };
+  private notifyAssetIsOnline() {
+    this.statusListeners.forEach((listener) => {
+      listener(true);
+    });
+  }
 
-  private notifyAssetIsOffline = () => {
-    this?.onStatusUpdate?.(false);
-  };
+  private notifyAssetIsOffline() {
+    this.statusListeners.forEach((listener) => {
+      listener(false);
+    });
+  }
 }
 
 export default AssetConnection;

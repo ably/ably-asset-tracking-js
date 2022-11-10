@@ -10,39 +10,9 @@ export type SubscriberOptions = {
   ablyOptions: AblyTypes.ClientOptions;
 
   /**
-   * A callback to be notified when an enhanced location update is available.
-   */
-  onLocationUpdate?: LocationListener;
-
-  /**
-   * A callback to be notified when a raw location update is available.
-   */
-  onRawLocationUpdate?: LocationListener;
-
-  /**
-   * A callback to be notified when the online status of the asset changes.
-   */
-  onStatusUpdate?: StatusListener;
-
-  /**
    * The logging configuration.
    */
   loggerOptions?: LoggerOptions;
-
-  /**
-   * The desired resolution of updates, to be requested from the remote publisher.
-   */
-  resolution?: Resolution;
-
-  /**
-   * A callback to be notified when the publisher's calculated resolution of the asset changes.
-   */
-  onResolutionUpdate?: ResolutionListener;
-
-  /**
-   * A callback to be notified when the interval between location updates of the asset changes.
-   */
-  onLocationUpdateIntervalUpdate?: LocationUpdateIntervalListener;
 };
 
 type GeoJsonProperties = {
