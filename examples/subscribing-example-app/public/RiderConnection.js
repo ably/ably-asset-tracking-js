@@ -38,40 +38,46 @@ export class RiderConnection {
 
     this.subscriber = new Subscriber({
       ablyOptions: { authUrl: '/api/createTokenRequest' },
-      onLocationUpdate: (message) => {
-        this.processMessage(message);
-      },
-      onRawLocationUpdate: (message) => {
-        this.processMessage(message, true);
-      },
-      onStatusUpdate: (status) => {
-        this.statusUpdateCallback(status);
-      },
-      resolution: this.hiRes ? lowResolution : highResolution,
-      onLocationUpdateIntervalUpdate: (desiredInterval) => {
-        this.locationUpdateInterval = desiredInterval
-      },
     });
+
     createMapSpecificZoomListener((zoom) => {
       this.zoomLevel = zoom;
       if (zoom > zoomThreshold && !this.hiRes) {
         this.hiRes = true;
-        this.subscriber.sendChangeRequest(highResolution);
+        this.asset?.sendChangeRequest?.(highResolution);
         this.rider?.showAccuracyCircle();
       } else if (zoom <= zoomThreshold && this.hiRes) {
         this.rider?.hideAccuracyCircle();
         this.hiRes = false;
-        this.subscriber.sendChangeRequest(lowResolution);
+        this.asset?.sendChangeRequest?.(lowResolution);
       }
     });
   }
 
   async connect(channelId) {
-    if (this.subscriber.assetConnection) {
-      await this.subscriber.stop();
+    if (this.asset) {
+      await this.asset.stop();
     }
 
-    this.subscriber.start(channelId || 'ivan');
+    this.asset = this.subscriber.get(channelId || 'ivan', this.hiRes ? lowResolution : highResolution);
+
+    this.asset.addLocationListener((message) => {
+      this.processMessage(message);
+    });
+
+    this.asset.addRawLocationListener((message) => {
+      this.processMessage(message, true);
+    });
+
+    this.asset.addStatusListener((status) => {
+      this.statusUpdateCallback(status);
+    });
+
+    this.asset.addLocationUpdateIntervalListener((desiredInterval) => {
+      this.locationUpdateInterval = desiredInterval
+    });
+
+    await this.asset.start(channelId || 'ivan');
   }
 
   setRenderSkippedLocations(state) {

@@ -1,11 +1,9 @@
-import { Types } from 'ably';
 import AssetConnection, { EventNames } from '../../src/lib/AssetConnection';
-import Logger from '../../src/lib/utils/Logger';
 import { ClientTypes, Accuracy } from '../../src/lib/constants';
 import { setImmediate } from '../../src/lib/utils/utils';
 import { mocked } from 'ts-jest/utils';
+import Subscriber from '../../src/lib/Subscriber';
 
-const mockAblyRealtimePromise = jest.fn(); // mocked Ably.Realtime.Promise constructor
 const mockPresenceSubscribe = jest.fn();
 const mockPresenceUnsubscribe = jest.fn();
 const mockLeaveClient = jest.fn();
@@ -14,19 +12,24 @@ const mockChannelsGet = jest.fn();
 const mockChannelSubscribe = jest.fn();
 const mockPresenceUpdate = jest.fn();
 const mockChannelUnsubscribe = jest.fn();
-const mockClose = jest.fn();
 const mockSetImmediate = mocked(setImmediate);
 
 const trackingId = 'trackingId';
 const clientId = 'clientId';
-const ablyOptions = {};
 
 jest.mock('../../src/lib/utils/utils');
-jest.mock('ably', () => ({
-  Realtime: {
-    Promise: (options: Types.ClientOptions) => mockAblyRealtimePromise(options),
+
+const subscriber = ({
+  client: {
+    channels: {
+      get: mockChannelsGet,
+      release: jest.fn(),
+    },
+    auth: {
+      clientId,
+    },
   },
-}));
+} as unknown) as Subscriber;
 
 describe('AssetConnection', () => {
   beforeEach(() => {
@@ -42,29 +45,14 @@ describe('AssetConnection', () => {
       unsubscribe: mockChannelUnsubscribe,
     }));
     mockEnterClient.mockResolvedValue(undefined);
-    mockAblyRealtimePromise.mockImplementation(() => ({
-      channels: {
-        get: mockChannelsGet,
-      },
-      auth: {
-        clientId,
-      },
-      close: mockClose,
-    }));
   });
 
   afterEach(() => {
     jest.resetAllMocks();
   });
 
-  it('should create a new Ably.Realtime.Promise when constructor is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions);
-
-    expect(mockAblyRealtimePromise).toHaveBeenCalledWith(ablyOptions);
-  });
-
   it('should call ably.realtime.channels.get() with rewind=1 when constructor is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions);
+    new AssetConnection(subscriber, trackingId);
 
     expect(mockChannelsGet).toHaveBeenCalledTimes(1);
     expect(mockChannelsGet).toHaveBeenCalledWith(`tracking:${trackingId}`, {
@@ -74,8 +62,8 @@ describe('AssetConnection', () => {
     });
   });
 
-  it('should subscribe to presence events when .joinChannelPresence() is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions).joinChannelPresence();
+  it('should subscribe to presence events when .joinChannelPresence() is called', async () => {
+    await new AssetConnection(subscriber, trackingId).joinChannelPresence();
 
     expect(mockPresenceSubscribe).toHaveBeenCalledTimes(1);
   });
@@ -86,59 +74,43 @@ describe('AssetConnection', () => {
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      undefined,
-      resolution
-    ).joinChannelPresence();
+    new AssetConnection(subscriber, trackingId, resolution).joinChannelPresence();
 
     expect(mockEnterClient).toHaveBeenCalledTimes(1);
     expect(mockEnterClient).toHaveBeenCalledWith(clientId, { type: ClientTypes.Subscriber, resolution });
   });
 
-  it('should subscribe to enhanced events when enhancedLocationListener is supplied', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions, jest.fn());
+  it('should subscribe to raw and enhanced events when start is called', async () => {
+    await new AssetConnection(subscriber, trackingId).start();
 
-    expect(mockChannelSubscribe).toHaveBeenCalledTimes(1);
+    expect(mockChannelSubscribe).toHaveBeenCalledTimes(2);
     expect(mockChannelSubscribe).toHaveBeenCalledWith(EventNames.Enhanced, expect.any(Function));
-  });
-
-  it('should subscribe to raw events when rawLocationListener is supplied', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, jest.fn());
-
-    expect(mockChannelSubscribe).toHaveBeenCalledTimes(1);
     expect(mockChannelSubscribe).toHaveBeenCalledWith(EventNames.Raw, expect.any(Function));
   });
 
-  it('should call onStatusUpdate with true when publisher enters channel presence', () => {
+  it('should call onStatusUpdate with true when publisher enters channel presence', async () => {
     const onStatusUpdate = jest.fn();
+
     const presenceMessage = {
       data: {
         type: ClientTypes.Publisher,
       },
       action: 'enter',
     };
+
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      onStatusUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.statusListeners.add(onStatusUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
   });
 
-  it('should call onStatusUpdate with true when publisher is already present', () => {
+  it('should call onStatusUpdate with true when publisher is already present', async () => {
     const onStatusUpdate = jest.fn();
     const presenceMessage = {
       data: {
@@ -147,20 +119,18 @@ describe('AssetConnection', () => {
       action: 'present',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      onStatusUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.statusListeners.add(onStatusUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(true);
   });
 
-  it('should call onStatusUpdate with false when publisher is absent', () => {
+  it('should call onStatusUpdate with false when publisher is absent', async () => {
     const onStatusUpdate = jest.fn();
     const presenceMessage = {
       data: {
@@ -168,21 +138,20 @@ describe('AssetConnection', () => {
       },
       action: 'absent',
     };
+
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      onStatusUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.statusListeners.add(onStatusUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
   });
 
-  it('should call onStatusUpdate with false when publisher leaves channel presence', () => {
+  it('should call onStatusUpdate with false when publisher leaves channel presence', async () => {
     const onStatusUpdate = jest.fn();
     const presenceMessage = {
       data: {
@@ -190,21 +159,20 @@ describe('AssetConnection', () => {
       },
       action: 'leave',
     };
+
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      onStatusUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.statusListeners.add(onStatusUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onStatusUpdate).toHaveBeenCalledTimes(1);
     expect(onStatusUpdate).toHaveBeenCalledWith(false);
   });
 
-  it('should call publisher resolution listeners when publisher enters channel presence and has a resolution', () => {
+  it('should call publisher resolution listeners when publisher enters channel presence and has a resolution', async () => {
     const onResolutionUpdate = jest.fn();
     const onLocationUpdateIntervalUpdate = jest.fn();
     const publisherResolution = { accuracy: 'BALANCED', desiredInterval: 1, minimumDisplacement: 1.0 };
@@ -216,16 +184,13 @@ describe('AssetConnection', () => {
       action: 'enter',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      undefined,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.resolutionListeners.add(onResolutionUpdate);
+    assetConnection.locationUpdateIntervalListeners.add(onLocationUpdateIntervalUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onResolutionUpdate).toHaveBeenCalledTimes(1);
     expect(onResolutionUpdate).toHaveBeenCalledWith(publisherResolution);
@@ -233,7 +198,7 @@ describe('AssetConnection', () => {
     expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledWith(publisherResolution.desiredInterval);
   });
 
-  it('should not call publisher resolution listeners when publisher enters channel presence and does not have a resolution', () => {
+  it('should not call publisher resolution listeners when publisher enters channel presence and does not have a resolution', async () => {
     const onResolutionUpdate = jest.fn();
     const onLocationUpdateIntervalUpdate = jest.fn();
     const presenceMessage = {
@@ -244,22 +209,19 @@ describe('AssetConnection', () => {
       action: 'enter',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      undefined,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.resolutionListeners.add(onResolutionUpdate);
+    assetConnection.locationUpdateIntervalListeners.add(onLocationUpdateIntervalUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onResolutionUpdate).toHaveBeenCalledTimes(0);
     expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(0);
   });
 
-  it('should call publisher resolution listeners when publisher updates channel presence and has a resolution', () => {
+  it('should call publisher resolution listeners when publisher updates channel presence and has a resolution', async () => {
     const onResolutionUpdate = jest.fn();
     const onLocationUpdateIntervalUpdate = jest.fn();
     const publisherResolution = { accuracy: 'BALANCED', desiredInterval: 1, minimumDisplacement: 1.0 };
@@ -271,16 +233,13 @@ describe('AssetConnection', () => {
       action: 'update',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      undefined,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.resolutionListeners.add(onResolutionUpdate);
+    assetConnection.locationUpdateIntervalListeners.add(onLocationUpdateIntervalUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onResolutionUpdate).toHaveBeenCalledTimes(1);
     expect(onResolutionUpdate).toHaveBeenCalledWith(publisherResolution);
@@ -288,7 +247,7 @@ describe('AssetConnection', () => {
     expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledWith(publisherResolution.desiredInterval);
   });
 
-  it('should not call publisher resolution listeners when publisher updates channel presence and does not have a resolution', () => {
+  it('should not call publisher resolution listeners when publisher updates channel presence and does not have a resolution', async () => {
     const onResolutionUpdate = jest.fn();
     const onLocationUpdateIntervalUpdate = jest.fn();
     const presenceMessage = {
@@ -299,22 +258,19 @@ describe('AssetConnection', () => {
       action: 'update',
     };
     mockPresenceSubscribe.mockImplementation((fn) => fn(presenceMessage));
-    new AssetConnection(
-      new Logger(),
-      trackingId,
-      ablyOptions,
-      undefined,
-      undefined,
-      undefined,
-      onResolutionUpdate,
-      onLocationUpdateIntervalUpdate
-    ).joinChannelPresence();
+
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.resolutionListeners.add(onResolutionUpdate);
+    assetConnection.locationUpdateIntervalListeners.add(onLocationUpdateIntervalUpdate);
+
+    await assetConnection.joinChannelPresence();
 
     expect(onResolutionUpdate).toHaveBeenCalledTimes(0);
     expect(onLocationUpdateIntervalUpdate).toHaveBeenCalledTimes(0);
   });
 
-  it('should execute enhancedLocationListener with location message when publisher publishes enhanced location message', () => {
+  it('should execute enhancedLocationListener with location message when publisher publishes enhanced location message', async () => {
     const enhancedLocationListener = jest.fn();
     const locationMessage = {
       data: {
@@ -325,13 +281,15 @@ describe('AssetConnection', () => {
     mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessage));
     mockSetImmediate.mockImplementation((fn) => fn());
 
-    new AssetConnection(new Logger(), trackingId, ablyOptions, enhancedLocationListener);
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+    assetConnection.enhancedLocationListeners.add(enhancedLocationListener);
+    await assetConnection.start();
 
     expect(enhancedLocationListener).toHaveBeenCalledTimes(1);
     expect(enhancedLocationListener).toHaveBeenCalledWith(locationMessage.data);
   });
 
-  it('should execute rawLocationListener with location message when publisher publishes raw location message', () => {
+  it('should execute rawLocationListener with location message when publisher publishes raw location message', async () => {
     const rawLocationListener = jest.fn();
     const locationMessage = {
       data: {
@@ -342,13 +300,15 @@ describe('AssetConnection', () => {
     mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessage));
     mockSetImmediate.mockImplementation((fn) => fn());
 
-    new AssetConnection(new Logger(), trackingId, ablyOptions, undefined, rawLocationListener);
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+    assetConnection.rawLocationListeners.add(rawLocationListener);
+    await assetConnection.start();
 
     expect(rawLocationListener).toHaveBeenCalledTimes(1);
     expect(rawLocationListener).toHaveBeenCalledWith(locationMessage.data);
   });
 
-  it('should execute enhancedLocationListener with location messages when publisher publishes enhanced location message array', () => {
+  it('should execute enhancedLocationListener with location messages when publisher publishes enhanced location message array', async () => {
     const enhancedLocationListener = jest.fn();
     const locationMessages = {
       data: [
@@ -364,14 +324,18 @@ describe('AssetConnection', () => {
     mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessages));
     mockSetImmediate.mockImplementation((fn) => fn());
 
-    new AssetConnection(new Logger(), trackingId, ablyOptions, enhancedLocationListener);
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.enhancedLocationListeners.add(enhancedLocationListener);
+
+    await assetConnection.start();
 
     expect(enhancedLocationListener).toHaveBeenCalledTimes(2);
     expect(enhancedLocationListener).toHaveBeenNthCalledWith(1, locationMessages.data[0]);
     expect(enhancedLocationListener).toHaveBeenNthCalledWith(2, locationMessages.data[1]);
   });
 
-  it('should execute rawLocationListener with location messages when publisher publishes raw location message array', () => {
+  it('should execute rawLocationListener with location messages when publisher publishes raw location message array', async () => {
     const rawLocationListener = jest.fn();
     const locationMessages = {
       data: [
@@ -387,7 +351,11 @@ describe('AssetConnection', () => {
     mockChannelSubscribe.mockImplementation((_, fn) => fn(locationMessages));
     mockSetImmediate.mockImplementation((fn) => fn());
 
-    new AssetConnection(new Logger(), trackingId, ablyOptions, rawLocationListener);
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.rawLocationListeners.add(rawLocationListener);
+
+    await assetConnection.start();
 
     expect(rawLocationListener).toHaveBeenCalledTimes(2);
     expect(rawLocationListener).toHaveBeenNthCalledWith(1, locationMessages.data[0]);
@@ -400,9 +368,10 @@ describe('AssetConnection', () => {
       desiredInterval: 3,
       minimumDisplacement: 4,
     };
-    const connection = new AssetConnection(new Logger(), trackingId, ablyOptions);
 
-    connection.performChangeResolution(resolution);
+    const assetConnection = new AssetConnection(subscriber, trackingId);
+
+    assetConnection.performChangeResolution(resolution);
 
     expect(mockPresenceUpdate).toHaveBeenCalledTimes(1);
     expect(mockPresenceUpdate).toHaveBeenCalledWith({
@@ -412,22 +381,16 @@ describe('AssetConnection', () => {
   });
 
   it('should unsubscribe from channel when .close() is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions).close();
+    new AssetConnection(subscriber, trackingId).close();
 
     expect(mockChannelUnsubscribe).toHaveBeenCalledTimes(1);
   });
 
   it('should leave channel presence when .close() is called', () => {
-    new AssetConnection(new Logger(), trackingId, ablyOptions).close();
+    new AssetConnection(subscriber, trackingId).close();
 
     expect(mockPresenceUnsubscribe).toHaveBeenCalledTimes(1);
     expect(mockLeaveClient).toHaveBeenCalledTimes(1);
     expect(mockLeaveClient).toHaveBeenCalledWith(clientId);
-  });
-
-  it('should call Ably.Realtime.close() when .close() is called', async () => {
-    await new AssetConnection(new Logger(), trackingId, ablyOptions).close();
-
-    expect(mockClose).toHaveBeenCalledTimes(1);
   });
 });

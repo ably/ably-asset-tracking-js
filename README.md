@@ -42,56 +42,68 @@ yarn add @ably/asset-tracking
 
 ## Usage
 
-Here is an example of how the SDK can be used:
+### Subscribing to location updates
 
 ```ts
-import { Subscriber, Accuracy } from '@ably/asset-tracking';
+import { Subscriber } from '@ably/asset-tracking';
 
+// Client options passed to the underling ably-js instance.
+// You must provide some way for the client to authenticate with Ably.
+// In this example we're using basic authentication which means we must also provide a clientId.
+// See: https://ably.com/docs/core-features/authentication
 const ablyOptions = {
   key: ABLY_API_KEY,
   clientId: CLIENT_ID,
 };
 
+// Create a Subscriber instance.
+const subscriber = new Subscriber({
+  ablyOptions,
+});
+
+// Get an asset.
+const asset = subscriber.get('my_tracking_id');
+
 // Define a callback to be notified when a location update is recieved.
-const onLocationUpdate = (locationUpdate) => {
+asset.addLocationListener((locationUpdate) => {
   console.log(`Location update recieved. Coordinates: ${locationUpdate.location.geometry.coordinates}`);
-};
+});
 
-// Define a callback to be notified when the asset online status is updated.
-const onStatusUpdate = (isOnline) => {
+// Start tracking the asset. This will attach to the Ably realtime channel and enter presence.
+await asset.start(trackingId);
+
+// Stop tracking the asset, at some point later on when you no longer need to receive location updates.
+await asset.stop();
+```
+
+### Subscribing to driver status
+
+```ts
+// Register a callback to be notified when the asset online status is updated.
+asset.addStatusListener((isOnline) => {
   console.log(`Status update: Publisher is now ${isOnline ? 'online' : 'offline'}`);
-};
+});
+```
 
-// Request a specific resolution to be considered by the publisher.
+### Requesting publisher resolution
+```ts
+import { Accuracy } from '@ably/asset-tracking';
+
+// You can request a specific resolution to be considered by the publisher when you create an asset instance...
 const resolution = {
   accuracy: Accuracy.High,
   desiredInterval: 1000,
   minimumDisplacement: 1,
 };
 
-// Initialise the subscriber.
-const subscriber = new Subscriber({
-  ablyOptions,
-  onLocationUpdate,
-  onStatusUpdate,
+const asset = subscriber.get('my_tracking_id', resolution);
+
+// ...And you can send a request to change the resolution when the asset is already started
+await asset.sendChangeRequest({
+  accuracy: Accuracy.Low,
+  desiredInterval: 3000,
+  minimumDisplacement: 5,
 });
-
-const trackingId = '<some application defined asset tracking identifier>';
-
-(async () => {
-  // Start tracking an asset using its tracking identifier.
-  await subscriber.start(trackingId);
-
-  // Request a new resolution to be considered by the publisher.
-  await subscriber.sendChangeRequest({
-    accuracy: Accuracy.Low,
-    desiredInterval: 3000,
-    minimumDisplacement: 5,
-  });
-
-  // Stop tracking the asset.
-  await subscriber.stop();
-})();
 ```
 
 ## Example App
