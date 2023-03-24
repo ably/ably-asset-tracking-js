@@ -1,5 +1,17 @@
 # Change log
 
+## [1.0.0-beta.5](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.5)
+
+[Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.4...v1.0.0-beta.5)
+
+**Implemented enhancements:**
+
+- Create `Asset` class separate from `Subscriber` (allows tracking multiple assets on one connection) [\#108](https://github.com/ably/ably-asset-tracking-js/issues/108)
+
+**Fixed bugs:**
+
+- Calling start\(\) multiple times might lead to unclosed connections [\#106](https://github.com/ably/ably-asset-tracking-js/issues/106)
+
 ## [1.0.0-beta.4](https://github.com/ably/ably-asset-tracking-js/tree/v1.0.0-beta.4)
 
 [Full Changelog](https://github.com/ably/ably-asset-tracking-js/compare/v1.0.0-beta.3...v1.0.0-beta.4)
