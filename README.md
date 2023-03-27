@@ -70,7 +70,7 @@ asset.addLocationListener((locationUpdate) => {
 });
 
 // Start tracking the asset. This will attach to the Ably realtime channel and enter presence.
-await asset.start(trackingId);
+await asset.start();
 
 // Stop tracking the asset, at some point later on when you no longer need to receive location updates.
 await asset.stop();
