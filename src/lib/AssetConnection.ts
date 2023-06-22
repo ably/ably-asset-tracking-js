@@ -76,9 +76,9 @@ class AssetConnection {
         type: ClientTypes.Subscriber,
         resolution: this.resolution,
       })
-      .catch((reason) => {
-        this.logger.logError(`Error entering channel presence: ${JSON.stringify(reason)}`);
-        throw reason;
+      .catch((error) => {
+        this.logger.logError(`Error entering channel presence: ${(error as AblyTypes.ErrorInfo).message}`);
+        throw error;
       });
   }
 
