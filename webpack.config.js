@@ -9,6 +9,12 @@ module.exports = {
     extensions: ['.ts'],
   },
   module: {
-    rules: [{ test: /\.ts$/, loader: 'ts-loader' }],
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
 };

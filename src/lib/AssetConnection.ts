@@ -77,8 +77,8 @@ class AssetConnection {
         resolution: this.resolution,
       })
       .catch((reason) => {
-        this.logger.logError(`Error entering channel presence: ${reason}`);
-        throw new Error(reason);
+        this.logger.logError(`Error entering channel presence: ${JSON.stringify(reason)}`);
+        throw reason;
       });
   }
 
@@ -128,9 +128,9 @@ class AssetConnection {
     this.channel.presence.unsubscribe();
     try {
       await this.channel.presence.leaveClient(this.ably.auth.clientId);
-    } catch (e) {
-      this.logger.logError(`Error leaving channel presence: ${e.reason}`);
-      throw new Error(e.reason);
+    } catch (reason) {
+      this.logger.logError(`Error leaving channel presence: ${JSON.stringify(reason)}`);
+      throw reason;
     }
   }
 
