@@ -44,8 +44,8 @@ export class MockPublisher {
   };
 
   private getChannelFromTrackingId = (trackingId: string): Types.RealtimeChannelPromise => {
-      return this.ably.channels.get(`tracking:${trackingId}`);
-  }
+    return this.ably.channels.get(`tracking:${trackingId}`);
+  };
 }
 
 export const getRandomChannelName = (): string => Math.random().toString();
