@@ -128,9 +128,9 @@ class AssetConnection {
     this.channel.presence.unsubscribe();
     try {
       await this.channel.presence.leaveClient(this.ably.auth.clientId);
-    } catch (reason) {
-      this.logger.logError(`Error leaving channel presence: ${JSON.stringify(reason)}`);
-      throw reason;
+    } catch (error) {
+      this.logger.logError(`Error leaving channel presence: ${(error as AblyTypes.ErrorInfo).message}`);
+      throw error;
     }
   }
 
