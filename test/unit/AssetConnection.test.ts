@@ -19,7 +19,7 @@ const clientId = 'clientId';
 
 jest.mock('../../src/lib/utils/utils');
 
-const subscriber = ({
+const subscriber = {
   client: {
     channels: {
       get: mockChannelsGet,
@@ -29,7 +29,7 @@ const subscriber = ({
       clientId,
     },
   },
-} as unknown) as Subscriber;
+} as unknown as Subscriber;
 
 describe('AssetConnection', () => {
   beforeEach(() => {

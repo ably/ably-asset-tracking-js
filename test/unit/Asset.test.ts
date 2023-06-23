@@ -12,19 +12,19 @@ const mockPerformChangeResolution = jest.fn();
 const mockJoinChannelPresence = jest.fn();
 const mockAssetConnection = mocked(AssetConnection, true);
 
-const subscriber = ({} as unknown) as Subscriber;
+const subscriber = {} as unknown as Subscriber;
 
 const trackingId = 'trackingId';
 const resolution = {} as Resolution;
 
 describe('Asset', () => {
   beforeEach(() => {
-    mockAssetConnection.mockReturnValue(({
+    mockAssetConnection.mockReturnValue({
       start: mockStart,
       close: mockClose,
       performChangeResolution: mockPerformChangeResolution,
       joinChannelPresence: mockJoinChannelPresence,
-    } as unknown) as AssetConnection);
+    } as unknown as AssetConnection);
   });
 
   it('Should call the AssetConnection constructor with correct args on init', () => {
